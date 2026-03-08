@@ -35,7 +35,7 @@ We conducted a massive-scale evaluation of **118 algorithms**. Our research show
 
 Detailed performance analysis, convergence plots, and category reliability studies are available in the dedicated benchmarks document:
 
-👉 **[View Full Research & Benchmarks Report](benchmarks/BENCHMARKS.md)**
+👉 **[View Full Research & Benchmarks Report (with Visualizations)](benchmarks/BENCHMARKS.md)**
 
 ---
 
