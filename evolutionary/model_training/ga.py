@@ -38,7 +38,7 @@ class GA(SwarmOptimizer):
         mutation_rate: float = 0.1,
         device: str = "cpu",
     ) -> None:
-        defaults = dict(
+        dict(
             population_size=population_size,
             crossover_rate=crossover_rate,
             mutation_rate=mutation_rate,

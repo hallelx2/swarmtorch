@@ -1,15 +1,15 @@
 from typing import Any
 import torch
 import math
-import math
-import math
 from swarmtorch.base import SwarmOptimizer
 
 
 class CuckooSearch(SwarmOptimizer):
     """Cuckoo Search (CS) optimizer for PyTorch models."""
 
-    def __init__(self, params: Any, swarm_size: int = 30, pa: float = 0.25, device: str = "cpu") -> None:
+    def __init__(
+        self, params: Any, swarm_size: int = 30, pa: float = 0.25, device: str = "cpu"
+    ) -> None:
         super().__init__(params, swarm_size=swarm_size, device=device, pa=pa)
         self.pa = pa
         self.iteration_count = 0
@@ -29,9 +29,13 @@ class CuckooSearch(SwarmOptimizer):
                 idx += p.numel()
 
     def _get_params(self) -> torch.Tensor:
-        return torch.cat([p.data.flatten() for group in self.param_groups for p in group["params"]])
+        return torch.cat(
+            [p.data.flatten() for group in self.param_groups for p in group["params"]]
+        )
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("CS requires a closure function")
         fitness = torch.zeros(particles.shape[0], device=self.device)
@@ -42,7 +46,11 @@ class CuckooSearch(SwarmOptimizer):
 
     def _levy_flight(self, dim: int) -> torch.Tensor:
         beta = 1.5
-        sigma = (math.gamma(1 + beta) * math.sin(math.pi * beta / 2) / (math.gamma((1 + beta) / 2) * beta * 2 ** ((beta - 1) / 2))) ** (1 / beta)
+        sigma = (
+            math.gamma(1 + beta)
+            * math.sin(math.pi * beta / 2)
+            / (math.gamma((1 + beta) / 2) * beta * 2 ** ((beta - 1) / 2))
+        ) ** (1 / beta)
         u = torch.randn(dim, device=self.device) * sigma
         v = torch.randn(dim, device=self.device)
         step = u / (v.abs() ** (1 / beta))
@@ -60,8 +68,10 @@ class CuckooSearch(SwarmOptimizer):
 
         for i in range(self.swarm_size):
             if torch.rand(1, device=self.device).item() > self.pa:
-                self.positions[i] = self.positions[i] + 0.01 * self._levy_flight(self.positions.shape[1]) * (self.positions[i] - self.best_position)
-        
+                self.positions[i] = self.positions[i] + 0.01 * self._levy_flight(
+                    self.positions.shape[1]
+                ) * (self.positions[i] - self.best_position)
+
         self._set_params(self.best_position)
         self.iteration_count += 1
 
@@ -92,9 +102,13 @@ class Salp(SwarmOptimizer):
                 idx += p.numel()
 
     def _get_params(self) -> torch.Tensor:
-        return torch.cat([p.data.flatten() for group in self.param_groups for p in group["params"]])
+        return torch.cat(
+            [p.data.flatten() for group in self.param_groups for p in group["params"]]
+        )
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("Salp requires a closure function")
         fitness = torch.zeros(particles.shape[0], device=self.device)
@@ -113,14 +127,20 @@ class Salp(SwarmOptimizer):
             self.best_fitness = fitness[best_idx]
             self.best_position = self.positions[best_idx].clone()
 
-        c1 = 2 * math.exp(-(4 * self.iteration_count / 1000) ** 2)
-        
+        c1 = 2 * math.exp(-((4 * self.iteration_count / 1000) ** 2))
+
         for i in range(self.swarm_size):
             if i == 0:
-                self.positions[i] = self.best_position + c1 * (torch.rand(self.positions.shape[1], device=self.device) * 2 - 1)
+                self.positions[i] = self.best_position + c1 * (
+                    torch.rand(self.positions.shape[1], device=self.device) * 2 - 1
+                )
             else:
-                self.positions[i] = (self.positions[i] + self.positions[i - 1]) / 2 + c1 * (torch.rand(self.positions.shape[1], device=self.device) * 2 - 1)
-        
+                self.positions[i] = (
+                    self.positions[i] + self.positions[i - 1]
+                ) / 2 + c1 * (
+                    torch.rand(self.positions.shape[1], device=self.device) * 2 - 1
+                )
+
         self._set_params(self.best_position)
         self.iteration_count += 1
 
@@ -152,9 +172,13 @@ class Bee(SwarmOptimizer):
                 idx += p.numel()
 
     def _get_params(self) -> torch.Tensor:
-        return torch.cat([p.data.flatten() for group in self.param_groups for p in group["params"]])
+        return torch.cat(
+            [p.data.flatten() for group in self.param_groups for p in group["params"]]
+        )
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("Bee requires a closure function")
         fitness = torch.zeros(particles.shape[0], device=self.device)
@@ -178,19 +202,21 @@ class Bee(SwarmOptimizer):
             k = torch.randint(0, self.swarm_size, (1,)).item()
             while k == i:
                 k = torch.randint(0, self.swarm_size, (1,)).item()
-            
+
             new_pos = self.positions[i].clone()
-            new_pos[j] = self.positions[i, j] + (torch.rand(1, device=self.device).item() * 2 - 1) * (self.positions[i, j] - self.positions[k, j])
-            
+            new_pos[j] = self.positions[i, j] + (
+                torch.rand(1, device=self.device).item() * 2 - 1
+            ) * (self.positions[i, j] - self.positions[k, j])
+
             self._set_params(new_pos)
             new_fitness = closure().detach()
-            
+
             if new_fitness < fitness[i]:
                 self.positions[i] = new_pos
                 self.trials[i] = 0
             else:
                 self.trials[i] += 1
-        
+
         self._set_params(self.best_position)
         self.iteration_count += 1
 
@@ -221,9 +247,13 @@ class Fish(SwarmOptimizer):
                 idx += p.numel()
 
     def _get_params(self) -> torch.Tensor:
-        return torch.cat([p.data.flatten() for group in self.param_groups for p in group["params"]])
+        return torch.cat(
+            [p.data.flatten() for group in self.param_groups for p in group["params"]]
+        )
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("Fish requires a closure function")
         fitness = torch.zeros(particles.shape[0], device=self.device)
@@ -246,13 +276,17 @@ class Fish(SwarmOptimizer):
             center = torch.mean(self.positions, dim=0)
             self._set_params(center)
             center_fitness = closure().detach()
-            
+
             if center_fitness < fitness[i]:
-                self.positions[i] = center + torch.rand_like(self.positions[i]) * 0.5 * (center - self.positions[i])
+                self.positions[i] = center + torch.rand_like(
+                    self.positions[i]
+                ) * 0.5 * (center - self.positions[i])
             else:
                 partner_idx = torch.randint(0, self.swarm_size, (1,)).item()
-                self.positions[i] = self.positions[i] + torch.rand_like(self.positions[i]) * (self.positions[partner_idx] - self.positions[i])
-        
+                self.positions[i] = self.positions[i] + torch.rand_like(
+                    self.positions[i]
+                ) * (self.positions[partner_idx] - self.positions[i])
+
         self._set_params(self.best_position)
         self.iteration_count += 1
 

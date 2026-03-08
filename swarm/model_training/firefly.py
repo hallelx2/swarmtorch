@@ -6,8 +6,23 @@ from swarmtorch.base import SwarmOptimizer
 class Firefly(SwarmOptimizer):
     """Firefly Algorithm (FA) optimizer for PyTorch models."""
 
-    def __init__(self, params: Any, swarm_size: int = 30, alpha: float = 0.5, beta0: float = 1.0, gamma: float = 1.0, device: str = "cpu") -> None:
-        super().__init__(params, swarm_size=swarm_size, device=device, alpha=alpha, beta0=beta0, gamma=gamma)
+    def __init__(
+        self,
+        params: Any,
+        swarm_size: int = 30,
+        alpha: float = 0.5,
+        beta0: float = 1.0,
+        gamma: float = 1.0,
+        device: str = "cpu",
+    ) -> None:
+        super().__init__(
+            params,
+            swarm_size=swarm_size,
+            device=device,
+            alpha=alpha,
+            beta0=beta0,
+            gamma=gamma,
+        )
         self.alpha = alpha
         self.beta0 = beta0
         self.gamma = gamma
@@ -28,9 +43,13 @@ class Firefly(SwarmOptimizer):
                 idx += p.numel()
 
     def _get_params(self) -> torch.Tensor:
-        return torch.cat([p.data.flatten() for group in self.param_groups for p in group["params"]])
+        return torch.cat(
+            [p.data.flatten() for group in self.param_groups for p in group["params"]]
+        )
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("FA requires a closure function")
         fitness = torch.zeros(particles.shape[0], device=self.device)
@@ -53,8 +72,12 @@ class Firefly(SwarmOptimizer):
             for j in range(self.swarm_size):
                 if fitness[j] < fitness[i]:
                     dist = torch.norm(self.positions[i] - self.positions[j])
-                    beta = self.beta0 * torch.exp(-self.gamma * dist ** 2)
-                    self.positions[i] = self.positions[i] + beta * (self.positions[j] - self.positions[i]) + self.alpha * (torch.rand_like(self.positions[i]) - 0.5)
+                    beta = self.beta0 * torch.exp(-self.gamma * dist**2)
+                    self.positions[i] = (
+                        self.positions[i]
+                        + beta * (self.positions[j] - self.positions[i])
+                        + self.alpha * (torch.rand_like(self.positions[i]) - 0.5)
+                    )
 
         self._set_params(self.best_position)
         self.iteration_count += 1
@@ -90,9 +113,13 @@ class Bat(SwarmOptimizer):
                 idx += p.numel()
 
     def _get_params(self) -> torch.Tensor:
-        return torch.cat([p.data.flatten() for group in self.param_groups for p in group["params"]])
+        return torch.cat(
+            [p.data.flatten() for group in self.param_groups for p in group["params"]]
+        )
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("BA requires a closure function")
         fitness = torch.zeros(particles.shape[0], device=self.device)
@@ -113,11 +140,15 @@ class Bat(SwarmOptimizer):
 
         for i in range(self.swarm_size):
             self.frequencies[i] = 0 + 2 * torch.rand(1, device=self.device).item()
-            self.velocities[i] += (self.positions[i] - self.best_position) * self.frequencies[i]
+            self.velocities[i] += (
+                self.positions[i] - self.best_position
+            ) * self.frequencies[i]
             self.positions[i] = self.positions[i] + self.velocities[i]
 
             if torch.rand(1, device=self.device).item() > self.pulse_rates[i]:
-                self.positions[i] = self.best_position + 0.001 * torch.randn_like(self.positions[i])
+                self.positions[i] = self.best_position + 0.001 * torch.randn_like(
+                    self.positions[i]
+                )
 
         self._set_params(self.best_position)
         self.iteration_count += 1
@@ -149,9 +180,13 @@ class Dragonfly(SwarmOptimizer):
                 idx += p.numel()
 
     def _get_params(self) -> torch.Tensor:
-        return torch.cat([p.data.flatten() for group in self.param_groups for p in group["params"]])
+        return torch.cat(
+            [p.data.flatten() for group in self.param_groups for p in group["params"]]
+        )
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("DA requires a closure function")
         fitness = torch.zeros(particles.shape[0], device=self.device)
@@ -175,8 +210,10 @@ class Dragonfly(SwarmOptimizer):
             separation = -torch.sum(self.positions[i] - self.positions[neighbor_idx[0]])
             alignment = torch.mean(self.positions[neighbor_idx[1]]) - self.positions[i]
             cohesion = torch.mean(self.positions[neighbor_idx[2]]) - self.positions[i]
-            
-            self.positions[i] += (separation + alignment + cohesion) * 0.1 + (self.best_position - self.positions[i]) * 0.01
+
+            self.positions[i] += (separation + alignment + cohesion) * 0.1 + (
+                self.best_position - self.positions[i]
+            ) * 0.01
 
         self._set_params(self.best_position)
         self.iteration_count += 1

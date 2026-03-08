@@ -34,7 +34,7 @@ class SSA(SwarmOptimizer):
         swarm_size: int = 30,
         device: str = "cpu",
     ) -> None:
-        defaults = dict(
+        dict(
             swarm_size=swarm_size,
             device=device,
         )
@@ -105,8 +105,8 @@ class SSA(SwarmOptimizer):
         fitness = self._evaluate_fitness(self.positions, closure)
 
         sorted_indices = torch.argsort(fitness)
-        worst_indices = sorted_indices[-int(self.swarm_size * 0.2):]
-        best_indices = sorted_indices[:int(self.swarm_size * 0.1)]
+        worst_indices = sorted_indices[-int(self.swarm_size * 0.2) :]
+        best_indices = sorted_indices[: int(self.swarm_size * 0.1)]
 
         best_idx = sorted_indices[0]
         if fitness[best_idx] < self.best_fitness:
@@ -115,7 +115,6 @@ class SSA(SwarmOptimizer):
 
         max_iter = 1000
         pd = 0.8
-        sd = 0.2
 
         for i in range(self.swarm_size):
             if i in best_indices:
@@ -124,29 +123,29 @@ class SSA(SwarmOptimizer):
                     self.positions[i] = (
                         self.positions[i]
                         * torch.exp(
-                            -self.iteration_count / (torch.rand(1, device=self.device) * max_iter)
+                            -self.iteration_count
+                            / (torch.rand(1, device=self.device) * max_iter)
                         ).item()
-                        + torch.randn(self.positions.shape[1], device=self.device) * 0.01
+                        + torch.randn(self.positions.shape[1], device=self.device)
+                        * 0.01
                     )
                 else:
-                    self.positions[i] = (
-                        self.best_position
-                        + torch.randn(self.positions.shape[1], device=self.device)
-                        * torch.rand(1, device=self.device)
-                    )
+                    self.positions[i] = self.best_position + torch.randn(
+                        self.positions.shape[1], device=self.device
+                    ) * torch.rand(1, device=self.device)
             elif i in worst_indices:
                 self.positions[i] = (
                     self.best_position.reshape(1, -1)
                     + torch.randn(self.positions.shape[1], device=self.device)
                     * torch.abs(self.positions[i] - self.best_position)
-                    * (torch.rand(1, device=self.device).item() - 0.5) * 2
+                    * (torch.rand(1, device=self.device).item() - 0.5)
+                    * 2
                 ).squeeze()
             else:
-                self.positions[i] = (
-                    self.positions[i]
-                    + (torch.rand(1, device=self.device).item() - 0.5) * 2
-                    * (self.positions[i] - self.best_position)
-                    / (fitness[i] - self.best_fitness + 1e-10)
+                self.positions[i] = self.positions[i] + (
+                    torch.rand(1, device=self.device).item() - 0.5
+                ) * 2 * (self.positions[i] - self.best_position) / (
+                    fitness[i] - self.best_fitness + 1e-10
                 )
 
         self._set_params(self.best_position)

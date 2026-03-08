@@ -42,7 +42,9 @@ class GSA(SwarmOptimizer):
                 params.append(p.data.flatten())
         return torch.cat(params)
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("GSA requires a closure function")
 
@@ -67,7 +69,9 @@ class GSA(SwarmOptimizer):
 
         g = self.g0 / (self.iteration_count + 1)
 
-        masses = (fitness - torch.max(fitness)) / (torch.min(fitness) - torch.max(fitness) + 1e-10)
+        masses = (fitness - torch.max(fitness)) / (
+            torch.min(fitness) - torch.max(fitness) + 1e-10
+        )
         masses = torch.exp(masses)
         masses = masses / (torch.sum(masses) + 1e-10)
 
@@ -76,11 +80,17 @@ class GSA(SwarmOptimizer):
             for j in range(self.swarm_size):
                 if i != j:
                     dist = torch.norm(self.positions[j] - self.positions[i]) + 1e-10
-                    force += torch.rand_like(self.positions[i]) * g * masses[j] * (
-                        self.positions[j] - self.positions[i]
-                    ) / dist
+                    force += (
+                        torch.rand_like(self.positions[i])
+                        * g
+                        * masses[j]
+                        * (self.positions[j] - self.positions[i])
+                        / dist
+                    )
 
-            self.velocities[i] = torch.rand_like(self.velocities[i]) * self.velocities[i] + force
+            self.velocities[i] = (
+                torch.rand_like(self.velocities[i]) * self.velocities[i] + force
+            )
             self.positions[i] = self.positions[i] + self.velocities[i]
 
         self._set_params(self.best_position)

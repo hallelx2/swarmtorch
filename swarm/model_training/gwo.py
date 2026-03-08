@@ -35,7 +35,7 @@ class GWO(SwarmOptimizer):
         swarm_size: int = 30,
         device: str = "cpu",
     ) -> None:
-        defaults = dict(
+        dict(
             swarm_size=swarm_size,
             device=device,
         )

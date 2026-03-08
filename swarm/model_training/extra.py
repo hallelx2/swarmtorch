@@ -25,9 +25,13 @@ class AFSA(SwarmOptimizer):
                 idx += p.numel()
 
     def _get_params(self) -> torch.Tensor:
-        return torch.cat([p.data.flatten() for group in self.param_groups for p in group["params"]])
+        return torch.cat(
+            [p.data.flatten() for group in self.param_groups for p in group["params"]]
+        )
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("AFSA requires a closure function")
         fitness = torch.zeros(particles.shape[0], device=self.device)
@@ -52,16 +56,22 @@ class AFSA(SwarmOptimizer):
             center = torch.mean(self.positions, dim=0)
             self._set_params(center)
             center_fit = closure().detach()
-            
+
             if center_fit < fitness[i]:
-                self.positions[i] = self.positions[i] + step * (center - self.positions[i]) / (torch.norm(center - self.positions[i]) + 1e-10)
+                self.positions[i] = self.positions[i] + step * (
+                    center - self.positions[i]
+                ) / (torch.norm(center - self.positions[i]) + 1e-10)
             else:
                 partner = torch.randint(0, self.swarm_size, (1,)).item()
                 dist = torch.norm(self.positions[i] - self.positions[partner])
                 if dist < visual:
-                    self.positions[i] = self.positions[i] + step * (self.positions[partner] - self.positions[i]) / (dist + 1e-10)
+                    self.positions[i] = self.positions[i] + step * (
+                        self.positions[partner] - self.positions[i]
+                    ) / (dist + 1e-10)
                 else:
-                    self.positions[i] = self.positions[i] + torch.rand_like(self.positions[i]) * visual
+                    self.positions[i] = (
+                        self.positions[i] + torch.rand_like(self.positions[i]) * visual
+                    )
 
         self._set_params(self.best_position)
         self.iteration_count += 1
@@ -93,9 +103,13 @@ class HSA(SwarmOptimizer):
                 idx += p.numel()
 
     def _get_params(self) -> torch.Tensor:
-        return torch.cat([p.data.flatten() for group in self.param_groups for p in group["params"]])
+        return torch.cat(
+            [p.data.flatten() for group in self.param_groups for p in group["params"]]
+        )
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("HSA requires a closure function")
         fitness = torch.zeros(particles.shape[0], device=self.device)
@@ -154,9 +168,13 @@ class DFO2(SwarmOptimizer):
                 idx += p.numel()
 
     def _get_params(self) -> torch.Tensor:
-        return torch.cat([p.data.flatten() for group in self.param_groups for p in group["params"]])
+        return torch.cat(
+            [p.data.flatten() for group in self.param_groups for p in group["params"]]
+        )
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("DFO2 requires a closure function")
         fitness = torch.zeros(particles.shape[0], device=self.device)
@@ -178,7 +196,9 @@ class DFO2(SwarmOptimizer):
         for i in range(self.swarm_size):
             explorer = torch.randint(0, self.swarm_size // 3, (1,)).item()
             follower = torch.randint(self.swarm_size // 3, self.swarm_size, (1,)).item()
-            self.positions[i] = self.positions[explorer] + torch.rand_like(self.positions[i]) * (self.positions[follower] - self.positions[i])
+            self.positions[i] = self.positions[explorer] + torch.rand_like(
+                self.positions[i]
+            ) * (self.positions[follower] - self.positions[i])
 
         self._set_params(self.best_position)
         self.iteration_count += 1

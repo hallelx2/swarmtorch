@@ -41,14 +41,16 @@ class PSO(SwarmOptimizer):
         c2: float = 1.5,
         device: str = "cpu",
     ) -> None:
-        defaults = dict(
+        dict(
             swarm_size=swarm_size,
             w=w,
             c1=c1,
             c2=c2,
             device=device,
         )
-        super().__init__(params, swarm_size=swarm_size, device=device, w=w, c1=c1, c2=c2)
+        super().__init__(
+            params, swarm_size=swarm_size, device=device, w=w, c1=c1, c2=c2
+        )
         self.w = w
         self.c1 = c1
         self.c2 = c2

@@ -25,9 +25,13 @@ class BBO(SwarmOptimizer):
                 idx += p.numel()
 
     def _get_params(self) -> torch.Tensor:
-        return torch.cat([p.data.flatten() for group in self.param_groups for p in group["params"]])
+        return torch.cat(
+            [p.data.flatten() for group in self.param_groups for p in group["params"]]
+        )
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("BBO requires a closure function")
         fitness = torch.zeros(particles.shape[0], device=self.device)
@@ -75,9 +79,13 @@ class MVO(SwarmOptimizer):
                 idx += p.numel()
 
     def _get_params(self) -> torch.Tensor:
-        return torch.cat([p.data.flatten() for group in self.param_groups for p in group["params"]])
+        return torch.cat(
+            [p.data.flatten() for group in self.param_groups for p in group["params"]]
+        )
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("MVO requires a closure function")
         fitness = torch.zeros(particles.shape[0], device=self.device)

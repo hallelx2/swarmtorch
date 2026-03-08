@@ -1,7 +1,13 @@
 import importlib
-import os
 
-categories = ['bio_inspired', 'evolutionary', 'human_based', 'physics', 'hybrid', 'swarm']
+categories = [
+    "bio_inspired",
+    "evolutionary",
+    "human_based",
+    "physics",
+    "hybrid",
+    "swarm",
+]
 
 train_algos = {}
 tune_algos = {}
@@ -10,13 +16,13 @@ for cat in categories:
     try:
         mod_train = importlib.import_module(f"swarmtorch.{cat}.model_training")
         train_algos[cat] = getattr(mod_train, "__all__", [])
-    except Exception as e:
+    except Exception:
         train_algos[cat] = []
-        
+
     try:
         mod_tune = importlib.import_module(f"swarmtorch.{cat}.hyperparameter_tuning")
         tune_algos[cat] = getattr(mod_tune, "__all__", [])
-    except Exception as e:
+    except Exception:
         tune_algos[cat] = []
 
 print("=== Training Optimizers Found ===")

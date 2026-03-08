@@ -1,8 +1,6 @@
 from typing import Any
 import torch
 import math
-import math
-from math import gamma
 from swarmtorch.base import SwarmOptimizer
 
 
@@ -43,7 +41,9 @@ class FPA(SwarmOptimizer):
                 params.append(p.data.flatten())
         return torch.cat(params)
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("FPA requires a closure function")
         fitness = torch.zeros(particles.shape[0], device=self.device)
@@ -55,7 +55,11 @@ class FPA(SwarmOptimizer):
 
     def _levy_flight(self, dim: int) -> torch.Tensor:
         beta = 1.5
-        sigma = (math.gamma(1 + beta) * math.sin(math.pi * beta / 2) / (math.gamma((1 + beta) / 2) * beta * 2 ** ((beta - 1) / 2))) ** (1 / beta)
+        sigma = (
+            math.gamma(1 + beta)
+            * math.sin(math.pi * beta / 2)
+            / (math.gamma((1 + beta) / 2) * beta * 2 ** ((beta - 1) / 2))
+        ) ** (1 / beta)
         u = torch.randn(dim, device=self.device) * sigma
         v = torch.randn(dim, device=self.device)
         step = u / (v.abs() ** (1 / beta))
@@ -74,10 +78,14 @@ class FPA(SwarmOptimizer):
 
         for i in range(self.swarm_size):
             if torch.rand(1, device=self.device).item() < self.p:
-                self.positions[i] = self.best_position + self._levy_flight(self.positions.shape[1]) * (self.positions[i] - self.best_position)
+                self.positions[i] = self.best_position + self._levy_flight(
+                    self.positions.shape[1]
+                ) * (self.positions[i] - self.best_position)
             else:
                 j, k = torch.randint(0, self.swarm_size, (2,)).tolist()
-                self.positions[i] = self.positions[i] + torch.rand_like(self.positions[i]) * (self.positions[j] - self.positions[k])
+                self.positions[i] = self.positions[i] + torch.rand_like(
+                    self.positions[i]
+                ) * (self.positions[j] - self.positions[k])
 
         self._set_params(self.best_position)
         self.iteration_count += 1

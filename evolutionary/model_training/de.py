@@ -38,15 +38,13 @@ class DE(SwarmOptimizer):
         f: float = 0.8,
         device: str = "cpu",
     ) -> None:
-        defaults = dict(
+        dict(
             population_size=population_size,
             cr=cr,
             f=f,
             device=device,
         )
-        super().__init__(
-            params, swarm_size=population_size, device=device, cr=cr, f=f
-        )
+        super().__init__(params, swarm_size=population_size, device=device, cr=cr, f=f)
         self.population_size = population_size
         self.cr = cr
         self.f = f
@@ -128,9 +126,11 @@ class DE(SwarmOptimizer):
 
             if len(indices) >= 3:
                 a, b, c = indices[:3]
-                mutant = self.population[a] + self.f * (self.population[b] - self.population[c])
+                mutant = self.population[a] + self.f * (
+                    self.population[b] - self.population[c]
+                )
 
-                j_rand = torch.randint(0, self.population.shape[1], (1,)).item()
+                torch.randint(0, self.population.shape[1], (1,)).item()
 
                 trial = torch.where(
                     torch.rand(self.population.shape[1], device=self.device) < self.cr,

@@ -25,9 +25,13 @@ class EHO(SwarmOptimizer):
                 idx += p.numel()
 
     def _get_params(self) -> torch.Tensor:
-        return torch.cat([p.data.flatten() for group in self.param_groups for p in group["params"]])
+        return torch.cat(
+            [p.data.flatten() for group in self.param_groups for p in group["params"]]
+        )
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("EHO requires a closure function")
         fitness = torch.zeros(particles.shape[0], device=self.device)
@@ -45,11 +49,13 @@ class EHO(SwarmOptimizer):
         if fitness[best_idx] < self.best_fitness:
             self.best_fitness = fitness[best_idx]
             self.best_position = self.positions[best_idx].clone()
-        
+
         cl = 0.5
         for i in range(1, self.swarm_size):
-            self.positions[i] = cl * self.positions[i] + (1 - cl) * self.positions[best_idx]
-        
+            self.positions[i] = (
+                cl * self.positions[i] + (1 - cl) * self.positions[best_idx]
+            )
+
         self._set_params(self.best_position)
         self.iteration_count += 1
 
@@ -80,9 +86,13 @@ class ChickenSwarm(SwarmOptimizer):
                 idx += p.numel()
 
     def _get_params(self) -> torch.Tensor:
-        return torch.cat([p.data.flatten() for group in self.param_groups for p in group["params"]])
+        return torch.cat(
+            [p.data.flatten() for group in self.param_groups for p in group["params"]]
+        )
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("CSO requires a closure function")
         fitness = torch.zeros(particles.shape[0], device=self.device)
@@ -100,15 +110,19 @@ class ChickenSwarm(SwarmOptimizer):
         if fitness[best_idx] < self.best_fitness:
             self.best_fitness = fitness[best_idx]
             self.best_position = self.positions[best_idx].clone()
-        
+
         num_roosters = max(1, self.swarm_size // 10)
         for i in range(self.swarm_size):
             if i < num_roosters:
-                self.positions[i] = self.positions[i] + torch.randn_like(self.positions[i]) * 0.5
+                self.positions[i] = (
+                    self.positions[i] + torch.randn_like(self.positions[i]) * 0.5
+                )
             else:
                 mother_idx = torch.randint(0, num_roosters, (1,)).item()
-                self.positions[i] = self.positions[i] + torch.rand_like(self.positions[i]) * (self.positions[mother_idx] - self.positions[i])
-        
+                self.positions[i] = self.positions[i] + torch.rand_like(
+                    self.positions[i]
+                ) * (self.positions[mother_idx] - self.positions[i])
+
         self._set_params(self.best_position)
         self.iteration_count += 1
 
@@ -139,9 +153,13 @@ class SMA(SwarmOptimizer):
                 idx += p.numel()
 
     def _get_params(self) -> torch.Tensor:
-        return torch.cat([p.data.flatten() for group in self.param_groups for p in group["params"]])
+        return torch.cat(
+            [p.data.flatten() for group in self.param_groups for p in group["params"]]
+        )
 
-    def _evaluate_fitness(self, particles: torch.Tensor, closure: Any = None) -> torch.Tensor:
+    def _evaluate_fitness(
+        self, particles: torch.Tensor, closure: Any = None
+    ) -> torch.Tensor:
         if closure is None:
             raise ValueError("SMA requires a closure function")
         fitness = torch.zeros(particles.shape[0], device=self.device)
@@ -159,19 +177,26 @@ class SMA(SwarmOptimizer):
         if fitness[sorted_idx[0]] < self.best_fitness:
             self.best_fitness = fitness[sorted_idx[0]]
             self.best_position = self.positions[sorted_idx[0]].clone()
-        
-        w = torch.exp(torch.arange(self.swarm_size, device=self.device).float() / (-self.swarm_size))
-        
+
+        w = torch.exp(
+            torch.arange(self.swarm_size, device=self.device).float()
+            / (-self.swarm_size)
+        )
+
         for i in range(self.swarm_size):
             p = torch.tanh(torch.abs(fitness[i]))
             vb = torch.rand(self.positions.shape[1], device=self.device) * 2 - 1
             vc = torch.rand(self.positions.shape[1], device=self.device) * 2 - 1
-            
+
             idx1 = torch.randint(0, self.swarm_size, (1,)).item()
             idx2 = torch.randint(0, self.swarm_size, (1,)).item()
-            
-            self.positions[i] = self.best_position + vb * p * (self.positions[idx1] - self.positions[idx2]) + vc * w[i] * (self.best_position - self.positions[i])
-        
+
+            self.positions[i] = (
+                self.best_position
+                + vb * p * (self.positions[idx1] - self.positions[idx2])
+                + vc * w[i] * (self.best_position - self.positions[i])
+            )
+
         self._set_params(self.best_position)
         self.iteration_count += 1
 

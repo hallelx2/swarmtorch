@@ -57,13 +57,22 @@ class SA(SwarmOptimizer):
         self._set_params(self.current_params)
         current_loss_val = closure().item()
 
-        new_params = self.current_params + torch.randn_like(self.current_params) * self.temperature / self.initial_temp
+        new_params = (
+            self.current_params
+            + torch.randn_like(self.current_params)
+            * self.temperature
+            / self.initial_temp
+        )
         self._set_params(new_params)
         new_loss_val = closure().item()
 
         delta = new_loss_val - current_loss_val
 
-        if delta < 0 or torch.rand(1).item() < torch.exp(torch.tensor(-delta / self.temperature)).item():
+        if (
+            delta < 0
+            or torch.rand(1).item()
+            < torch.exp(torch.tensor(-delta / self.temperature)).item()
+        ):
             self.current_params = new_params.clone()
             self.current_loss = new_loss_val
         else:

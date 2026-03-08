@@ -34,7 +34,7 @@ class HHO(SwarmOptimizer):
         swarm_size: int = 30,
         device: str = "cpu",
     ) -> None:
-        defaults = dict(
+        dict(
             swarm_size=swarm_size,
             device=device,
         )
@@ -113,7 +113,7 @@ class HHO(SwarmOptimizer):
         e = 2 * (1 - self.iteration_count / max_iter)
 
         for i in range(self.swarm_size):
-            r = torch.rand(1, device=self.device).item()
+            torch.rand(1, device=self.device).item()
 
             if e >= 1:
                 q = torch.rand(1, device=self.device).item()
@@ -121,23 +121,43 @@ class HHO(SwarmOptimizer):
                     random_hawk = torch.randint(0, self.swarm_size, (1,)).item()
                     self.positions[i] = self.positions[random_hawk] + torch.rand(
                         self.positions.shape[1], device=self.device
-                    ) * 2 * (torch.rand(self.positions.shape[1], device=self.device) - 0.5)
+                    ) * 2 * (
+                        torch.rand(self.positions.shape[1], device=self.device) - 0.5
+                    )
                 else:
                     self.positions[i] = self.best_position + torch.rand(
                         self.positions.shape[1], device=self.device
-                    ) * 2 * (torch.rand(self.positions.shape[1], device=self.device) - 0.5)
+                    ) * 2 * (
+                        torch.rand(self.positions.shape[1], device=self.device) - 0.5
+                    )
             else:
                 if e >= 0.5:
                     jump_strength = 2 * (1 - self.iteration_count / max_iter)
                     rabbit_mean = torch.mean(self.positions, dim=0)
-                    self.positions[i] = self.best_position - self.positions[i] + (
-                        rabbit_mean
-                        + jump_strength * 2 * (torch.rand(self.positions.shape[1], device=self.device) - 0.5)
-                    ) * (torch.rand(self.positions.shape[1], device=self.device) - 0.5)
+                    self.positions[i] = (
+                        self.best_position
+                        - self.positions[i]
+                        + (
+                            rabbit_mean
+                            + jump_strength
+                            * 2
+                            * (
+                                torch.rand(self.positions.shape[1], device=self.device)
+                                - 0.5
+                            )
+                        )
+                        * (
+                            torch.rand(self.positions.shape[1], device=self.device)
+                            - 0.5
+                        )
+                    )
                 else:
                     rabbit_mean = torch.mean(self.positions, dim=0)
                     self.positions[i] = self.best_position - e * torch.abs(
-                        rabbit_mean - 2 * torch.rand(self.positions.shape[1], device=self.device) * self.best_position
+                        rabbit_mean
+                        - 2
+                        * torch.rand(self.positions.shape[1], device=self.device)
+                        * self.best_position
                     )
 
         self._set_params(self.best_position)
