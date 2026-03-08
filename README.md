@@ -11,44 +11,32 @@ Whether you are performing **Gradient-Free Neural Network Training** or **Automa
 The library is logically structured into 6 core categories, each reflecting a unique mathematical or biological inspiration. This organization allows researchers to easily compare different families of algorithms.
 
 ### 1. Swarm Intelligence (`swarmtorch.swarm`)
-
 *The flagship category, modeling decentralized, self-organized collective behaviors.*
-
 - **Top Algorithms:** PSO (Particle Swarm), GWO (Grey Wolf), HHO (Harris Hawks), SSA (Salp Swarm).
 - **Best For:** Global search in high-dimensional spaces.
 
 ### 2. Evolutionary Algorithms (`swarmtorch.evolutionary`)
-
 *Based on the mechanisms of natural selection and biological evolution.*
-
 - **Top Algorithms:** GA (Genetic Algorithm), DE (Differential Evolution), CEM (Cross-Entropy Method).
 - **Best For:** Robust, mutation-driven exploration.
 
 ### 3. Physics-Based (`swarmtorch.physics`)
-
 *Algorithms derived from the fundamental laws of the physical world.*
-
 - **Top Algorithms:** SA (Simulated Annealing), GSA (Gravitational Search), FPA (Flower Pollination).
 - **Best For:** Problems with well-defined energy or force landscapes.
 
 ### 4. Human-Based (`swarmtorch.human_based`)
-
 *Simulates human social interactions, teaching, and learning processes.*
-
 - **Top Algorithms:** TLBO (Teaching-Learning-Based), Harmony Search.
 - **Best For:** Knowledge-sharing-driven convergence.
 
 ### 5. Bio-Inspired (`swarmtorch.bio_inspired`)
-
 *General biological models and life-cycle simulations.*
-
 - **Top Algorithms:** ALO (Ant Lion), BBO (Biogeography-Based), MVO (Multi-Verse).
 - **Best For:** Specialized niche optimization tasks.
 
 ### 6. Hybrid Algorithms (`swarmtorch.hybrid`)
-
 *Advanced optimizers that combine multiple strategies for superior convergence.*
-
 - **Top Algorithms:** SMA (Slime Mold), Gorilla Optimizer, Cat Swarm.
 - **Best For:** Complex, multimodal surfaces where single-strategy algorithms might stall.
 
@@ -56,17 +44,19 @@ The library is logically structured into 6 core categories, each reflecting a un
 
 ## 🚀 Installation & Integration
 
-### Setup
+### Installation
 
+**Using pip:**
 ```bash
-# Clone and install as a development package
-git clone https://github.com/your-repo/swarmtorch.git
-cd swarmtorch
-pip install -e .
+pip install swarmtorch
+```
+
+**Using uv (Recommended):**
+```bash
+uv add swarmtorch
 ```
 
 ### 1. Model Weight Optimization (Gradient-Free)
-
 Train any PyTorch model without using `loss.backward()`. This is ideal for non-differentiable objectives or when exploring global landscapes.
 
 ```python
@@ -98,7 +88,6 @@ optimizer.step(closure)
 ```
 
 ### 2. Hyperparameter Optimization (HPO)
-
 Optimize architectural choices and training parameters (learning rates, layer sizes) using intelligent searchers instead of grid or random search.
 
 ```python
@@ -139,28 +128,28 @@ Our library has undergone a massive-scale rigorous evaluation of **118 algorithm
 ### 1. Model Training Benchmarks (Weight Optimization)
 SwarmTorch enables the training of neural networks without gradients. Our tests on non-linear classification tasks show that several metaheuristics can achieve convergence comparable to standard gradient-based methods.
 
-![Training Convergence](benchmarks/training_convergence.png)
+![Training Convergence](https://raw.githubusercontent.com/hallelx2/swarmtorch/master/benchmarks/training_convergence.png)
 *Figure 1: Convergence history comparing Swarm Optimizers (PSO, HHO, etc.) against Adam and SGD. Many swarm algorithms exhibit highly stable descent.*
 
-![Top Training Optimizers](benchmarks/top_optimizers_training.png)
+![Top Training Optimizers](https://raw.githubusercontent.com/hallelx2/swarmtorch/master/benchmarks/top_optimizers_training.png)
 *Figure 2: The Top 25 most effective weight optimizers ranked by final loss. Hybrid and Swarm Intelligence algorithms show the strongest performance.*
 
 ### 2. High-Density Distribution Analysis
 We analyzed the reliability of each category. Swarm and Hybrid categories demonstrated the highest stability and lowest variance across multiple trials.
 
-![Category Distribution](benchmarks/bench_category_dist.png)
+![Category Distribution](https://raw.githubusercontent.com/hallelx2/swarmtorch/master/benchmarks/bench_category_dist.png)
 *Figure 3: Statistical distribution of final loss across categories. Lower loss and tighter boxes indicate superior and more reliable optimization.*
 
 ### 3. Hyperparameter Optimization (HPO) Benchmarks
 Our metaheuristic searchers are designed to replace Random Search with more intelligent exploration strategies.
 
-![HPO Success Rate](benchmarks/bench_success_rate.png)
+![HPO Success Rate](https://raw.githubusercontent.com/hallelx2/swarmtorch/master/benchmarks/bench_success_rate.png)
 *Figure 4: Success rate of metaheuristic searchers vs. the Random Search baseline. Over 94% of our algorithms outperformed Random Search.*
 
 ### 4. The "Generalist" Frontier
 By mapping Training Robustness against HPO Accuracy, we identified the most versatile algorithms in the library—those that excel in both weight optimization and hyperparameter tuning.
 
-![Generalist Mapping](benchmarks/bench_generalist_map.png)
+![Generalist Mapping](https://raw.githubusercontent.com/hallelx2/swarmtorch/master/benchmarks/bench_generalist_map.png)
 *Figure 5: Scatter plot mapping Training Efficiency vs. HPO Accuracy. Elite generalist algorithms occupy the top-right quadrant.*
 
 ---
@@ -179,11 +168,9 @@ By mapping Training Robustness against HPO Accuracy, we identified the most vers
 ---
 
 ## 🤝 Acknowledgments & References
-
 This library was developed with reference to the **[pyMetaheuristic](https://github.com/mariosv/pyMetaheuristic)** library. We are grateful for their contributions to the metaheuristic optimization community, which served as a foundational resource for the algorithmic implementations in **SwarmTorch**.
 
 ## 📝 Citation
-
 If you use **SwarmTorch** in your research, please cite it as follows:
 
 ```bibtex
