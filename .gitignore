@@ -47,4 +47,4 @@ test_tuning_results*.txt
 # Data
 data/
 *.png
-!swarmtorch/benchmarks/*.png
+!benchmarks/*.png
