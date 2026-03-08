@@ -90,7 +90,7 @@ def run_full_training_benchmark():
 
                 try:
                     optimizer = opt_class(model.parameters(), swarm_size=SWARM_SIZE)
-                except:
+                except Exception:
                     optimizer = opt_class(
                         model.parameters(), population_size=SWARM_SIZE
                     )
@@ -109,7 +109,7 @@ def run_full_training_benchmark():
                     try:
                         loss_tensor = optimizer.step(closure)
                         last_loss = loss_tensor.item()
-                    except:
+                    except Exception:
                         break
                 results.append(
                     {

@@ -38,10 +38,10 @@ def parse_markdown_table(content, section_title):
         for col in df.columns:
             try:
                 df[col] = pd.to_numeric(df[col])
-            except:
+            except Exception:
                 pass
         return df
-    except:
+    except Exception:
         return None
 
 

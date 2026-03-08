@@ -17,6 +17,7 @@ __all__ = [
     "Cockroach",
     "Coati",
     "Gorilla",
+    "GorillaTroopsOptimizer",
     "JSO",
     "KHA",
 ]

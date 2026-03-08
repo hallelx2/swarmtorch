@@ -128,12 +128,12 @@ class WOA(SwarmOptimizer):
                     d = torch.abs(c_val * self.positions[rand_idx] - self.positions[i])
                     self.positions[i] = self.positions[rand_idx] - a_val * d
             else:
-                l = torch.rand(1, device=self.device).item() * 2 - 1
+                l_val = torch.rand(1, device=self.device).item() * 2 - 1
                 d = torch.abs(self.best_position - self.positions[i])
                 self.positions[i] = (
                     d
-                    * torch.exp(l * torch.tensor(torch.pi))
-                    * torch.cos(2 * torch.tensor(torch.pi) * l)
+                    * torch.exp(l_val * torch.tensor(torch.pi))
+                    * torch.cos(2 * torch.tensor(torch.pi) * l_val)
                     + self.best_position
                 )
 

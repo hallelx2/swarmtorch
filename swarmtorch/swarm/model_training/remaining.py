@@ -922,7 +922,7 @@ class IWOA(SwarmOptimizer):
 
         max_iter = 1000
         a = 2 - self.iteration_count * (2 / max_iter)
-        l = torch.rand(1, device=self.device) * 2 - 1
+        l_val = torch.rand(1, device=self.device) * 2 - 1
         p = torch.rand(1, device=self.device).item()
 
         for i in range(self.swarm_size):
