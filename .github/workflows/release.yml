@@ -9,6 +9,8 @@ jobs:
   build-n-publish:
     name: Build and publish Python 🐍 distributions 📦 to PyPI
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required to create a release and upload assets
     steps:
     - uses: actions/checkout@v4
     
