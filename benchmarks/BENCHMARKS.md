@@ -24,7 +24,7 @@ We analyzed the reliability of each category. Swarm and Hybrid categories demons
 *Figure 3: Statistical distribution of final loss across categories. Lower loss indicates superior optimization.*
 
 ### 3. Hyperparameter Optimization (HPO) Benchmarks
-Our metaheuristic searchers are designed to replace Random Search with more intelligent exploration strategies. **94.9% of our algorithms outperformed Random Search.**
+Our metaheuristic searchers are designed to replace Random Search with more intelligent exploration strategies. **65.5% of our algorithms outperformed Random Search.**
 
 ![Success Rate](bench_success_rate.png)
 *Figure 4: Success rate of metaheuristic searchers vs. the Random Search baseline.*

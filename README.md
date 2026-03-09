@@ -31,7 +31,7 @@ SwarmTorch is a high-performance, academic-grade library that brings **120+ meta
 
 ## 📈 Benchmarks & Research
 
-We conducted a massive-scale evaluation of **118 algorithms**. Our research shows that **94.9% of SwarmTorch searchers outperform the standard Random Search baseline** in HPO tasks.
+We conducted a massive-scale evaluation of **118 algorithms**. Our research shows that **65.5% of SwarmTorch searchers outperform the standard Random Search baseline** in HPO tasks, with top performers achieving near-perfect validation accuracy.
 
 Detailed performance analysis, convergence plots, and category reliability studies are available in the dedicated benchmarks document:
 
