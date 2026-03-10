@@ -7,6 +7,7 @@ from swarmtorch.hybrid.model_training import (
     Cockroach,
     Coati,
     Gorilla,
+    GorillaTroopsOptimizer,
     JSO,
     KHA,
 )
@@ -75,6 +76,13 @@ class KHASearch(GenericSwarmSearch):
         super().__init__(KHA, *args, **kwargs)
 
 
+class GorillaTroopsOptimizerSearch(GenericSwarmSearch):
+    """GorillaTroopsOptimizerSearch hyperparameter search using GorillaTroopsOptimizer."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(GorillaTroopsOptimizer, *args, **kwargs)
+
+
 __all__ = [
     "EHOSearch",
     "ChickenSwarmSearch",
@@ -83,6 +91,7 @@ __all__ = [
     "CockroachSearch",
     "CoatiSearch",
     "GorillaSearch",
+    "GorillaTroopsOptimizerSearch",
     "JSOSearch",
     "KHASearch",
 ]

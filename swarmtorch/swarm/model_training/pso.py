@@ -41,13 +41,6 @@ class PSO(SwarmOptimizer):
         c2: float = 1.5,
         device: str = "cpu",
     ) -> None:
-        dict(
-            swarm_size=swarm_size,
-            w=w,
-            c1=c1,
-            c2=c2,
-            device=device,
-        )
         super().__init__(
             params, swarm_size=swarm_size, device=device, w=w, c1=c1, c2=c2
         )
@@ -77,41 +70,6 @@ class PSO(SwarmOptimizer):
 
         self.global_best_position = torch.zeros(param_shape[0], device=self.device)
         self.global_best_fitness = torch.tensor(float("inf"), device=self.device)
-
-    def _evaluate_fitness(
-        self,
-        particles: torch.Tensor,
-        closure: Any | None = None,
-    ) -> torch.Tensor:
-        """Evaluate fitness for each particle using the closure (forward pass)."""
-        if closure is None:
-            raise ValueError("PSO requires a closure function to evaluate fitness")
-
-        fitness = torch.zeros(particles.shape[0], device=self.device)
-
-        for i in range(particles.shape[0]):
-            self._set_params(particles[i])
-            loss = closure()
-            fitness[i] = loss.detach()
-
-        return fitness
-
-    def _set_params(self, flat_params: torch.Tensor) -> None:
-        """Set model parameters from flattened tensor."""
-        idx = 0
-        for group in self.param_groups:
-            for p in group["params"]:
-                numel = p.numel()
-                p.data.copy_(flat_params[idx : idx + numel].reshape(p.shape))
-                idx += numel
-
-    def _get_params(self) -> torch.Tensor:
-        """Get flattened model parameters."""
-        params = []
-        for group in self.param_groups:
-            for p in group["params"]:
-                params.append(p.data.flatten())
-        return torch.cat(params)
 
     def _update_positions(self) -> None:
         """Update particle positions and velocities based on PSO equations."""

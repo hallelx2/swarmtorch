@@ -1,4 +1,3 @@
-
 lines = (
     open(r"..\test_tuning_results.txt", "r", encoding="utf-16le").read().splitlines()
 )

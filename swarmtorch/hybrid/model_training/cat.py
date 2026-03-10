@@ -22,29 +22,6 @@ class CatSwarm(SwarmOptimizer):
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
-    def _set_params(self, flat_params: torch.Tensor) -> None:
-        idx = 0
-        for group in self.param_groups:
-            for p in group["params"]:
-                p.data.copy_(flat_params[idx : idx + p.numel()].reshape(p.shape))
-                idx += p.numel()
-
-    def _get_params(self) -> torch.Tensor:
-        return torch.cat(
-            [p.data.flatten() for group in self.param_groups for p in group["params"]]
-        )
-
-    def _evaluate_fitness(
-        self, particles: torch.Tensor, closure: Any = None
-    ) -> torch.Tensor:
-        if closure is None:
-            raise ValueError("CatSwarm requires a closure function")
-        fitness = torch.zeros(particles.shape[0], device=self.device)
-        for i in range(particles.shape[0]):
-            self._set_params(particles[i])
-            fitness[i] = closure().detach()
-        return fitness
-
     def _update_positions(self) -> None:
         closure = getattr(self, "_current_closure", None)
         if closure is None:
@@ -90,29 +67,6 @@ class Cockroach(SwarmOptimizer):
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
-    def _set_params(self, flat_params: torch.Tensor) -> None:
-        idx = 0
-        for group in self.param_groups:
-            for p in group["params"]:
-                p.data.copy_(flat_params[idx : idx + p.numel()].reshape(p.shape))
-                idx += p.numel()
-
-    def _get_params(self) -> torch.Tensor:
-        return torch.cat(
-            [p.data.flatten() for group in self.param_groups for p in group["params"]]
-        )
-
-    def _evaluate_fitness(
-        self, particles: torch.Tensor, closure: Any = None
-    ) -> torch.Tensor:
-        if closure is None:
-            raise ValueError("Cockroach requires a closure function")
-        fitness = torch.zeros(particles.shape[0], device=self.device)
-        for i in range(particles.shape[0]):
-            self._set_params(particles[i])
-            fitness[i] = closure().detach()
-        return fitness
-
     def _update_positions(self) -> None:
         closure = getattr(self, "_current_closure", None)
         if closure is None:
@@ -153,29 +107,6 @@ class Coati(SwarmOptimizer):
         self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
-
-    def _set_params(self, flat_params: torch.Tensor) -> None:
-        idx = 0
-        for group in self.param_groups:
-            for p in group["params"]:
-                p.data.copy_(flat_params[idx : idx + p.numel()].reshape(p.shape))
-                idx += p.numel()
-
-    def _get_params(self) -> torch.Tensor:
-        return torch.cat(
-            [p.data.flatten() for group in self.param_groups for p in group["params"]]
-        )
-
-    def _evaluate_fitness(
-        self, particles: torch.Tensor, closure: Any = None
-    ) -> torch.Tensor:
-        if closure is None:
-            raise ValueError("Coati requires a closure function")
-        fitness = torch.zeros(particles.shape[0], device=self.device)
-        for i in range(particles.shape[0]):
-            self._set_params(particles[i])
-            fitness[i] = closure().detach()
-        return fitness
 
     def _update_positions(self) -> None:
         closure = getattr(self, "_current_closure", None)
@@ -225,29 +156,6 @@ class GorillaTroopsOptimizer(SwarmOptimizer):
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
-    def _set_params(self, flat_params: torch.Tensor) -> None:
-        idx = 0
-        for group in self.param_groups:
-            for p in group["params"]:
-                p.data.copy_(flat_params[idx : idx + p.numel()].reshape(p.shape))
-                idx += p.numel()
-
-    def _get_params(self) -> torch.Tensor:
-        return torch.cat(
-            [p.data.flatten() for group in self.param_groups for p in group["params"]]
-        )
-
-    def _evaluate_fitness(
-        self, particles: torch.Tensor, closure: Any = None
-    ) -> torch.Tensor:
-        if closure is None:
-            raise ValueError("Gorilla requires a closure function")
-        fitness = torch.zeros(particles.shape[0], device=self.device)
-        for i in range(particles.shape[0]):
-            self._set_params(particles[i])
-            fitness[i] = closure().detach()
-        return fitness
-
     def _update_positions(self) -> None:
         closure = getattr(self, "_current_closure", None)
         if closure is None:
@@ -258,11 +166,8 @@ class GorillaTroopsOptimizer(SwarmOptimizer):
             self.best_fitness = fitness[best_idx]
             self.best_position = self.positions[best_idx].clone()
 
-        max_iter = 1000
         p = 0.03
         g = 0.5
-        self.iteration_count / max_iter
-
         for i in range(self.swarm_size):
             if torch.rand(1, device=self.device).item() < p:
                 self.positions[i] = g * torch.rand(
@@ -309,29 +214,6 @@ class JSO(SwarmOptimizer):
         self.worst_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
         self.worst_fitness = torch.tensor(-float("inf"), device=self.device)
-
-    def _set_params(self, flat_params: torch.Tensor) -> None:
-        idx = 0
-        for group in self.param_groups:
-            for p in group["params"]:
-                p.data.copy_(flat_params[idx : idx + p.numel()].reshape(p.shape))
-                idx += p.numel()
-
-    def _get_params(self) -> torch.Tensor:
-        return torch.cat(
-            [p.data.flatten() for group in self.param_groups for p in group["params"]]
-        )
-
-    def _evaluate_fitness(
-        self, particles: torch.Tensor, closure: Any = None
-    ) -> torch.Tensor:
-        if closure is None:
-            raise ValueError("JSO requires a closure function")
-        fitness = torch.zeros(particles.shape[0], device=self.device)
-        for i in range(particles.shape[0]):
-            self._set_params(particles[i])
-            fitness[i] = closure().detach()
-        return fitness
 
     def _update_positions(self) -> None:
         closure = getattr(self, "_current_closure", None)
@@ -380,29 +262,6 @@ class KHA(SwarmOptimizer):
         self.velocities = torch.zeros_like(self.positions)
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
-
-    def _set_params(self, flat_params: torch.Tensor) -> None:
-        idx = 0
-        for group in self.param_groups:
-            for p in group["params"]:
-                p.data.copy_(flat_params[idx : idx + p.numel()].reshape(p.shape))
-                idx += p.numel()
-
-    def _get_params(self) -> torch.Tensor:
-        return torch.cat(
-            [p.data.flatten() for group in self.param_groups for p in group["params"]]
-        )
-
-    def _evaluate_fitness(
-        self, particles: torch.Tensor, closure: Any = None
-    ) -> torch.Tensor:
-        if closure is None:
-            raise ValueError("KHA requires a closure function")
-        fitness = torch.zeros(particles.shape[0], device=self.device)
-        for i in range(particles.shape[0]):
-            self._set_params(particles[i])
-            fitness[i] = closure().detach()
-        return fitness
 
     def _update_positions(self) -> None:
         closure = getattr(self, "_current_closure", None)

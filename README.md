@@ -11,17 +11,18 @@
 
 ---
 
-SwarmTorch is a high-performance, academic-grade library that brings **120+ metaheuristic algorithms** to the PyTorch ecosystem. It enables gradient-free neural network training and state-of-the-art hyperparameter optimization (HPO) with a single, unified API.
+SwarmTorch is a high-performance, academic-grade library that brings **120 metaheuristic algorithms** to the PyTorch ecosystem. It enables gradient-free neural network training and state-of-the-art hyperparameter optimization (HPO) with a single, unified API.
+
+- **60 model-training optimizers** for gradient-free weight optimization
+- **60 hyperparameter-tuning searchers** for intelligent HPO
 
 [Installation](#-installation) • [Key Features](#-key-features) • [Benchmarks & Research](#-benchmarks--research) • [Usage](#-usage) • [Citation](#-citation)
-
-</div>
 
 ---
 
 ## 🚀 Key Features
 
-*   **120+ Algorithms**: Categorized into Swarm Intelligence, Evolutionary, Physics-based, Human-based, Bio-inspired, and Hybrids.
+*   **120 Algorithms (60 + 60)**: 60 model-training optimizers + 60 HPO searchers across 6 categories: Swarm Intelligence, Evolutionary, Physics-based, Human-based, Bio-inspired, and Hybrids.
 *   **Gradient-Free Training**: Optimize weights for non-differentiable or complex loss landscapes directly as a PyTorch `Optimizer`.
 *   **Deep HPO Integration**: Replace Random/Grid search with intelligent, nature-inspired exploration.
 *   **Research Ready**: Includes full benchmarking suites, raw experimental data, and publication-quality visualizations.
@@ -31,7 +32,7 @@ SwarmTorch is a high-performance, academic-grade library that brings **120+ meta
 
 ## 📈 Benchmarks & Research
 
-We conducted a massive-scale evaluation of **118 algorithms**. Our research shows that **65.5% of SwarmTorch searchers outperform the standard Random Search baseline** in HPO tasks, with top performers achieving near-perfect validation accuracy.
+We conducted a massive-scale evaluation of **120 algorithms** (60 training + 60 HPO). Our research shows that **65.5% of SwarmTorch searchers outperform the standard Random Search baseline** in HPO tasks, with top performers achieving near-perfect validation accuracy.
 
 Detailed performance analysis, convergence plots, and category reliability studies are available in the dedicated benchmarks document:
 

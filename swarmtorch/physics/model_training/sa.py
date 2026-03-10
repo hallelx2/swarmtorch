@@ -34,21 +34,6 @@ class SA(SwarmOptimizer):
         self.current_params = self._get_params().clone()
         self.temperature = self.initial_temp
 
-    def _set_params(self, flat_params: torch.Tensor) -> None:
-        idx = 0
-        for group in self.param_groups:
-            for p in group["params"]:
-                numel = p.numel()
-                p.data.copy_(flat_params[idx : idx + numel].reshape(p.shape))
-                idx += numel
-
-    def _get_params(self) -> torch.Tensor:
-        params = []
-        for group in self.param_groups:
-            for p in group["params"]:
-                params.append(p.data.flatten())
-        return torch.cat(params)
-
     def _update_positions(self) -> None:
         closure = getattr(self, "_current_closure", None)
         if closure is None or self.current_params is None:

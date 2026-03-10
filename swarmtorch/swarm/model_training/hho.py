@@ -34,10 +34,6 @@ class HHO(SwarmOptimizer):
         swarm_size: int = 30,
         device: str = "cpu",
     ) -> None:
-        dict(
-            swarm_size=swarm_size,
-            device=device,
-        )
         super().__init__(params, swarm_size=swarm_size, device=device)
         self.iteration_count = 0
 
@@ -61,41 +57,6 @@ class HHO(SwarmOptimizer):
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
-    def _set_params(self, flat_params: torch.Tensor) -> None:
-        """Set model parameters from flattened tensor."""
-        idx = 0
-        for group in self.param_groups:
-            for p in group["params"]:
-                numel = p.numel()
-                p.data.copy_(flat_params[idx : idx + numel].reshape(p.shape))
-                idx += numel
-
-    def _get_params(self) -> torch.Tensor:
-        """Get flattened model parameters."""
-        params = []
-        for group in self.param_groups:
-            for p in group["params"]:
-                params.append(p.data.flatten())
-        return torch.cat(params)
-
-    def _evaluate_fitness(
-        self,
-        particles: torch.Tensor,
-        closure: Any | None = None,
-    ) -> torch.Tensor:
-        """Evaluate fitness for each hawk using the closure."""
-        if closure is None:
-            raise ValueError("HHO requires a closure function to evaluate fitness")
-
-        fitness = torch.zeros(particles.shape[0], device=self.device)
-
-        for i in range(particles.shape[0]):
-            self._set_params(particles[i])
-            loss = closure()
-            fitness[i] = loss.detach()
-
-        return fitness
-
     def _update_positions(self) -> None:
         """Update hawk positions based on HHO equations."""
         closure = getattr(self, "_current_closure", None)
@@ -113,8 +74,6 @@ class HHO(SwarmOptimizer):
         e = 2 * (1 - self.iteration_count / max_iter)
 
         for i in range(self.swarm_size):
-            torch.rand(1, device=self.device).item()
-
             if e >= 1:
                 q = torch.rand(1, device=self.device).item()
                 if q >= 0.5:

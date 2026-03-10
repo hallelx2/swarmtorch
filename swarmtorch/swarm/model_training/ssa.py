@@ -34,10 +34,6 @@ class SSA(SwarmOptimizer):
         swarm_size: int = 30,
         device: str = "cpu",
     ) -> None:
-        dict(
-            swarm_size=swarm_size,
-            device=device,
-        )
         super().__init__(params, swarm_size=swarm_size, device=device)
         self.iteration_count = 0
 
@@ -60,41 +56,6 @@ class SSA(SwarmOptimizer):
 
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
-
-    def _set_params(self, flat_params: torch.Tensor) -> None:
-        """Set model parameters from flattened tensor."""
-        idx = 0
-        for group in self.param_groups:
-            for p in group["params"]:
-                numel = p.numel()
-                p.data.copy_(flat_params[idx : idx + numel].reshape(p.shape))
-                idx += numel
-
-    def _get_params(self) -> torch.Tensor:
-        """Get flattened model parameters."""
-        params = []
-        for group in self.param_groups:
-            for p in group["params"]:
-                params.append(p.data.flatten())
-        return torch.cat(params)
-
-    def _evaluate_fitness(
-        self,
-        particles: torch.Tensor,
-        closure: Any | None = None,
-    ) -> torch.Tensor:
-        """Evaluate fitness for each sparrow using the closure."""
-        if closure is None:
-            raise ValueError("SSA requires a closure function to evaluate fitness")
-
-        fitness = torch.zeros(particles.shape[0], device=self.device)
-
-        for i in range(particles.shape[0]):
-            self._set_params(particles[i])
-            loss = closure()
-            fitness[i] = loss.detach()
-
-        return fitness
 
     def _update_positions(self) -> None:
         """Update sparrow positions based on SSA equations."""

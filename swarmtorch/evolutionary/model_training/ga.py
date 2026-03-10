@@ -38,12 +38,6 @@ class GA(SwarmOptimizer):
         mutation_rate: float = 0.1,
         device: str = "cpu",
     ) -> None:
-        dict(
-            population_size=population_size,
-            crossover_rate=crossover_rate,
-            mutation_rate=mutation_rate,
-            device=device,
-        )
         super().__init__(
             params,
             swarm_size=population_size,
@@ -75,41 +69,6 @@ class GA(SwarmOptimizer):
 
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
-
-    def _set_params(self, flat_params: torch.Tensor) -> None:
-        """Set model parameters from flattened tensor."""
-        idx = 0
-        for group in self.param_groups:
-            for p in group["params"]:
-                numel = p.numel()
-                p.data.copy_(flat_params[idx : idx + numel].reshape(p.shape))
-                idx += numel
-
-    def _get_params(self) -> torch.Tensor:
-        """Get flattened model parameters."""
-        params = []
-        for group in self.param_groups:
-            for p in group["params"]:
-                params.append(p.data.flatten())
-        return torch.cat(params)
-
-    def _evaluate_fitness(
-        self,
-        population: torch.Tensor,
-        closure: Any | None = None,
-    ) -> torch.Tensor:
-        """Evaluate fitness for each individual using the closure."""
-        if closure is None:
-            raise ValueError("GA requires a closure function to evaluate fitness")
-
-        fitness = torch.zeros(population.shape[0], device=self.device)
-
-        for i in range(population.shape[0]):
-            self._set_params(population[i])
-            loss = closure()
-            fitness[i] = loss.detach()
-
-        return fitness
 
     def _selection(self) -> torch.Tensor:
         """Tournament selection."""

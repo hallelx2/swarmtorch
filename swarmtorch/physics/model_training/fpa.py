@@ -26,33 +26,6 @@ class FPA(SwarmOptimizer):
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
-    def _set_params(self, flat_params: torch.Tensor) -> None:
-        idx = 0
-        for group in self.param_groups:
-            for p in group["params"]:
-                numel = p.numel()
-                p.data.copy_(flat_params[idx : idx + numel].reshape(p.shape))
-                idx += numel
-
-    def _get_params(self) -> torch.Tensor:
-        params = []
-        for group in self.param_groups:
-            for p in group["params"]:
-                params.append(p.data.flatten())
-        return torch.cat(params)
-
-    def _evaluate_fitness(
-        self, particles: torch.Tensor, closure: Any = None
-    ) -> torch.Tensor:
-        if closure is None:
-            raise ValueError("FPA requires a closure function")
-        fitness = torch.zeros(particles.shape[0], device=self.device)
-        for i in range(particles.shape[0]):
-            self._set_params(particles[i])
-            loss = closure()
-            fitness[i] = loss.detach()
-        return fitness
-
     def _levy_flight(self, dim: int) -> torch.Tensor:
         beta = 1.5
         sigma = (

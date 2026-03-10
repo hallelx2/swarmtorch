@@ -41,6 +41,57 @@ class SwarmOptimizer(Optimizer):
                 total_params += p.numel()
         return torch.Size([total_params])
 
+    def _set_params(self, flat_params: torch.Tensor) -> None:
+        """Set model parameters from a flattened tensor.
+
+        Args:
+            flat_params: 1-D tensor containing all parameter values.
+        """
+        idx = 0
+        for group in self.param_groups:
+            for p in group["params"]:
+                numel = p.numel()
+                p.data.copy_(flat_params[idx : idx + numel].reshape(p.shape))
+                idx += numel
+
+    def _get_params(self) -> torch.Tensor:
+        """Get all model parameters as a single flattened tensor.
+
+        Returns:
+            1-D tensor of concatenated, flattened parameters.
+        """
+        return torch.cat(
+            [p.data.flatten() for group in self.param_groups for p in group["params"]]
+        )
+
+    def _evaluate_fitness(
+        self,
+        particles: torch.Tensor,
+        closure: Any = None,
+    ) -> torch.Tensor:
+        """Evaluate fitness for each particle/individual using the closure.
+
+        Args:
+            particles: 2-D tensor of shape ``(n, d)`` where each row is a
+                candidate solution (flattened model parameters).
+            closure: A callable that evaluates the model and returns the loss.
+
+        Returns:
+            1-D tensor of fitness (loss) values, one per particle.
+
+        Raises:
+            ValueError: If *closure* is ``None``.
+        """
+        if closure is None:
+            raise ValueError(
+                f"{type(self).__name__} requires a closure function to evaluate fitness"
+            )
+        fitness = torch.zeros(particles.shape[0], device=self.device)
+        for i in range(particles.shape[0]):
+            self._set_params(particles[i])
+            fitness[i] = closure().detach()
+        return fitness
+
     def _init_swarm(self) -> None:
         """Initialize swarm particles. Override in subclasses."""
         raise NotImplementedError("Subclasses must implement _init_swarm")

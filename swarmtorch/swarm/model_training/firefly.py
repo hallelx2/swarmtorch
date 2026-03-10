@@ -35,29 +35,6 @@ class Firefly(SwarmOptimizer):
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
-    def _set_params(self, flat_params: torch.Tensor) -> None:
-        idx = 0
-        for group in self.param_groups:
-            for p in group["params"]:
-                p.data.copy_(flat_params[idx : idx + p.numel()].reshape(p.shape))
-                idx += p.numel()
-
-    def _get_params(self) -> torch.Tensor:
-        return torch.cat(
-            [p.data.flatten() for group in self.param_groups for p in group["params"]]
-        )
-
-    def _evaluate_fitness(
-        self, particles: torch.Tensor, closure: Any = None
-    ) -> torch.Tensor:
-        if closure is None:
-            raise ValueError("FA requires a closure function")
-        fitness = torch.zeros(particles.shape[0], device=self.device)
-        for i in range(particles.shape[0]):
-            self._set_params(particles[i])
-            fitness[i] = closure().detach()
-        return fitness
-
     def _update_positions(self) -> None:
         closure = getattr(self, "_current_closure", None)
         if closure is None:
@@ -105,29 +82,6 @@ class Bat(SwarmOptimizer):
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
-    def _set_params(self, flat_params: torch.Tensor) -> None:
-        idx = 0
-        for group in self.param_groups:
-            for p in group["params"]:
-                p.data.copy_(flat_params[idx : idx + p.numel()].reshape(p.shape))
-                idx += p.numel()
-
-    def _get_params(self) -> torch.Tensor:
-        return torch.cat(
-            [p.data.flatten() for group in self.param_groups for p in group["params"]]
-        )
-
-    def _evaluate_fitness(
-        self, particles: torch.Tensor, closure: Any = None
-    ) -> torch.Tensor:
-        if closure is None:
-            raise ValueError("BA requires a closure function")
-        fitness = torch.zeros(particles.shape[0], device=self.device)
-        for i in range(particles.shape[0]):
-            self._set_params(particles[i])
-            fitness[i] = closure().detach()
-        return fitness
-
     def _update_positions(self) -> None:
         closure = getattr(self, "_current_closure", None)
         if closure is None:
@@ -171,29 +125,6 @@ class Dragonfly(SwarmOptimizer):
         self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
-
-    def _set_params(self, flat_params: torch.Tensor) -> None:
-        idx = 0
-        for group in self.param_groups:
-            for p in group["params"]:
-                p.data.copy_(flat_params[idx : idx + p.numel()].reshape(p.shape))
-                idx += p.numel()
-
-    def _get_params(self) -> torch.Tensor:
-        return torch.cat(
-            [p.data.flatten() for group in self.param_groups for p in group["params"]]
-        )
-
-    def _evaluate_fitness(
-        self, particles: torch.Tensor, closure: Any = None
-    ) -> torch.Tensor:
-        if closure is None:
-            raise ValueError("DA requires a closure function")
-        fitness = torch.zeros(particles.shape[0], device=self.device)
-        for i in range(particles.shape[0]):
-            self._set_params(particles[i])
-            fitness[i] = closure().detach()
-        return fitness
 
     def _update_positions(self) -> None:
         closure = getattr(self, "_current_closure", None)
