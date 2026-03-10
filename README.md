@@ -1,6 +1,5 @@
-<div align="center">
-
 # SwarmTorch 🐝🔥
+
 **The ultimate metaheuristic library for PyTorch**
 
 [![CI](https://github.com/hallelx2/swarmtorch/actions/workflows/ci.yml/badge.svg)](https://github.com/hallelx2/swarmtorch/actions/workflows/ci.yml)
@@ -16,17 +15,17 @@ SwarmTorch is a high-performance, academic-grade library that brings **120 metah
 - **60 model-training optimizers** for gradient-free weight optimization
 - **60 hyperparameter-tuning searchers** for intelligent HPO
 
-[Installation](#-installation) • [Key Features](#-key-features) • [Benchmarks & Research](#-benchmarks--research) • [Usage](#-usage) • [Citation](#-citation)
+[Installation](#installation) • [Key Features](#key-features) • [Benchmarks & Research](#benchmarks--research) • [Usage](#usage) • [Citation](#citation)
 
 ---
 
 ## 🚀 Key Features
 
-*   **120 Algorithms (60 + 60)**: 60 model-training optimizers + 60 HPO searchers across 6 categories: Swarm Intelligence, Evolutionary, Physics-based, Human-based, Bio-inspired, and Hybrids.
-*   **Gradient-Free Training**: Optimize weights for non-differentiable or complex loss landscapes directly as a PyTorch `Optimizer`.
-*   **Deep HPO Integration**: Replace Random/Grid search with intelligent, nature-inspired exploration.
-*   **Research Ready**: Includes full benchmarking suites, raw experimental data, and publication-quality visualizations.
-*   **Highly Optimized**: Leverages PyTorch's tensor operations for swarm-level parallelism.
+- **120 Algorithms (60 + 60)**: 60 model-training optimizers + 60 HPO searchers across 6 categories: Swarm Intelligence, Evolutionary, Physics-based, Human-based, Bio-inspired, and Hybrids.
+- **Gradient-Free Training**: Optimize weights for non-differentiable or complex loss landscapes directly as a PyTorch `Optimizer`.
+- **Deep HPO Integration**: Replace Random/Grid search with intelligent, nature-inspired exploration.
+- **Research Ready**: Includes full benchmarking suites, raw experimental data, and publication-quality visualizations.
+- **Highly Optimized**: Leverages PyTorch's tensor operations for swarm-level parallelism.
 
 ---
 
@@ -43,13 +42,21 @@ Detailed performance analysis, convergence plots, and category reliability studi
 ## 📦 Installation
 
 **Using pip:**
+
 ```bash
 pip install swarmtorch
 ```
 
 **Using uv (Recommended):**
+
 ```bash
 uv add swarmtorch
+```
+
+**With benchmark dependencies:**
+
+```bash
+pip install swarmtorch[benchmarks]
 ```
 
 ---
@@ -57,9 +64,10 @@ uv add swarmtorch
 ## 💻 Usage
 
 ### Model Weight Optimization
+
 ```python
 import torch.nn as nn
-from swarmtorch.swarm.model_training import PSO
+from swarmtorch import PSO
 
 model = nn.Sequential(nn.Linear(10, 64), nn.ReLU(), nn.Linear(64, 1))
 optimizer = PSO(model.parameters(), swarm_size=30)
@@ -73,8 +81,9 @@ optimizer.step(closure)
 ```
 
 ### Hyperparameter Tuning
+
 ```python
-from swarmtorch.swarm.hyperparameter_tuning import PSOSearch
+from swarmtorch import PSOSearch
 
 searcher = PSOSearch(
     model_fn=build_model,
@@ -87,10 +96,28 @@ best_params = searcher.search()
 
 ---
 
+## Why SwarmTorch?
+
+Traditional deep learning relies on gradient-based optimization (Adam, SGD, etc.). SwarmTorch complements these with:
+
+| Scenario | Use Gradient (Adam/SGD) | Use SwarmTorch |
+|----------|------------------------|----------------|
+| Standard classification | ✅ Best choice | Overkill |
+| Non-differentiable loss | ❌ Can't use | ✅ Perfect fit |
+| Discrete optimization | ❌ Can't use | ✅ Perfect fit |
+| Multi-modal landscapes | Gets stuck | Explores well |
+| Hyperparameter tuning | Manual search | Automated |
+
+---
+
 ## 🤝 Acknowledgments & References
+
 This library was developed with reference to the **[pyMetaheuristic](https://github.com/mariosv/pyMetaheuristic)** library. We are grateful for their contributions to the metaheuristic optimization community.
 
+---
+
 ## 📝 Citation
+
 ```bibtex
 @software{swarmtorch2026,
   author = {Halleluyah Darasimi Oludele},
