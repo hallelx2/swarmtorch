@@ -48,3 +48,6 @@ test_tuning_results*.txt
 data/
 *.png
 !benchmarks/*.png
+
+# Paper (before submission)
+paper/

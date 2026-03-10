@@ -53,11 +53,11 @@ class FeatureSelectionBenchmark:
         y_train, y_val = self.y[:n_train], self.y[n_train:]
 
         # Quick training with Adam
-        n_selected = selected_indices.sum().item()
+        n_selected = int(selected_indices.sum().item())
         if n_selected == 0:
             return 1.0, None  # Worst case: no features
 
-        hidden = min(32, max(8, n_selected))
+        hidden = int(min(32, max(8, n_selected)))
 
         model = nn.Sequential(
             nn.Linear(n_selected, hidden), nn.ReLU(), nn.Linear(hidden, 1), nn.Sigmoid()
