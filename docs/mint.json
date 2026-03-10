@@ -94,8 +94,8 @@
     "baseUrl": "https://swarmtorch.readthedocs.io"
   },
   "themeConfig": {
-    "primaryColor": "#FF6B35",
-    "accent": {
+    "colors": {
+      "primary": "#FF6B35",
       "light": "#FF8C5A",
       "dark": "#FF6B35"
     },

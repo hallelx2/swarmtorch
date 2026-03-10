@@ -1,5 +1,6 @@
-# SwarmTorch 🐝🔥
+<div align="center">
 
+# SwarmTorch 🐝🔥
 **The ultimate metaheuristic library for PyTorch**
 
 [![CI](https://github.com/hallelx2/swarmtorch/actions/workflows/ci.yml/badge.svg)](https://github.com/hallelx2/swarmtorch/actions/workflows/ci.yml)
@@ -7,6 +8,8 @@
 [![Downloads](https://pepy.tech/badge/swarmtorch)](https://pepy.tech/project/swarmtorch)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+
+</div>
 
 ---
 
