@@ -8,9 +8,7 @@
   },
   "favicon": "/favicon.svg",
   "colors": {
-    "primary": "#FF6B35",
-    "light": "#FF8C5A",
-    "dark": "#FF6B35"
+    "primary": "#FF6B35"
   },
   "anchors": [
     {
@@ -39,60 +37,32 @@
       "url": "examples"
     }
   ],
-  "navigation": [
-    {
-      "group": "Getting Started",
-      "pages": [
-        "getting-started/installation",
-        "getting-started/quickstart",
-        "getting-started/concepts"
-      ]
-    },
-    {
-      "group": "Guides",
-      "pages": [
-        "guides/model-training",
-        "guides/hyperparameter-tuning",
-        "guides/choosing-algorithm",
-        "guides/custom-optimizer",
-        "guides/gpu-training"
-      ]
-    },
-    {
-      "group": "API Reference",
-      "pages": [
-        "api-reference/base",
-        "api-reference/swarm",
-        "api-reference/evolutionary",
-        "api-reference/physics",
-        "api-reference/bio-inspired",
-        "api-reference/human-based",
-        "api-reference/hybrid"
-      ]
-    },
-    {
-      "group": "Benchmarks",
-      "pages": [
-        "benchmarks/benchmarks",
-        "benchmarks/methodology",
-        "benchmarks/results"
-      ]
-    },
-    {
-      "group": "Examples",
-      "pages": [
-        "examples/xor-classification",
-        "examples/image-classification",
-        "examples/hyperparameter-search"
-      ]
-    },
-    {
-      "group": "Resources",
-      "pages": [
-        "contributing"
-      ]
-    }
-  ],
+  "navigation": {
+    "pages": [
+      "getting-started/installation",
+      "getting-started/quickstart",
+      "getting-started/concepts",
+      "guides/model-training",
+      "guides/hyperparameter-tuning",
+      "guides/choosing-algorithm",
+      "guides/custom-optimizer",
+      "guides/gpu-training",
+      "api-reference/base",
+      "api-reference/swarm",
+      "api-reference/evolutionary",
+      "api-reference/physics",
+      "api-reference/bio-inspired",
+      "api-reference/human-based",
+      "api-reference/hybrid",
+      "benchmarks/benchmarks",
+      "benchmarks/methodology",
+      "benchmarks/results",
+      "examples/xor-classification",
+      "examples/image-classification",
+      "examples/hyperparameter-search",
+      "contributing"
+    ]
+  },
   "footerSocials": {
     "github": "https://github.com/hallelx2/swarmtorch"
   }
