@@ -67,6 +67,7 @@
     {
       "group": "Benchmarks",
       "pages": [
+        "benchmarks/benchmarks",
         "benchmarks/methodology",
         "benchmarks/results"
       ]
