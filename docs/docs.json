@@ -39,7 +39,7 @@
   ],
   "navigation": {
     "pages": [
-      "index",
+      "introduction",
       "getting-started/installation",
       "getting-started/quickstart",
       "getting-started/concepts",
