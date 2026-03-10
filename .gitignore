@@ -49,5 +49,5 @@ data/
 *.png
 !benchmarks/*.png
 
-# Paper (before submission)
-paper/
+# Paper - uncomment for arXiv submission
+# paper/
