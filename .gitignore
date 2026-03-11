@@ -49,5 +49,6 @@ data/
 *.png
 !benchmarks/*.png
 
-# Paper - uncomment for arXiv submission
-# paper/
+# Paper - personal working copies (never commit)
+paper/
+arxiv_submission/
