@@ -62,7 +62,7 @@ class GWO(SwarmOptimizer):
         self.delta_position = torch.zeros(param_shape[0], device=self.device)
 
     def _update_positions(self) -> None:
-        """Update wolf positions based on alpha, beta, and delta."""
+        """Update wolf positions based on alpha, beta, delta (vectorized)."""
         closure = getattr(self, "_current_closure", None)
         if closure is None:
             return
@@ -83,33 +83,28 @@ class GWO(SwarmOptimizer):
 
         a = 2 - self.iteration_count * (2 / 1000)
 
-        for i in range(self.swarm_size):
-            for j in range(self.positions.shape[1]):
-                r1 = torch.rand(1, device=self.device).item()
-                r2 = torch.rand(1, device=self.device).item()
+        r1_alpha = torch.rand_like(self.positions)
+        r2_alpha = torch.rand_like(self.positions)
+        A1 = 2 * a * r1_alpha - a
+        C1 = 2 * r2_alpha
+        D1 = torch.abs(C1 * self.alpha_position - self.positions)
+        X1 = self.alpha_position - A1 * D1
 
-                A1 = 2 * a * r1 - a
-                C1 = 2 * r2
-                D1 = torch.abs(C1 * self.alpha_position[j] - self.positions[i, j])
-                X1 = self.alpha_position[j] - A1 * D1
+        r1_beta = torch.rand_like(self.positions)
+        r2_beta = torch.rand_like(self.positions)
+        A2 = 2 * a * r1_beta - a
+        C2 = 2 * r2_beta
+        D2 = torch.abs(C2 * self.beta_position - self.positions)
+        X2 = self.beta_position - A2 * D2
 
-                r1 = torch.rand(1, device=self.device).item()
-                r2 = torch.rand(1, device=self.device).item()
+        r1_delta = torch.rand_like(self.positions)
+        r2_delta = torch.rand_like(self.positions)
+        A3 = 2 * a * r1_delta - a
+        C3 = 2 * r2_delta
+        D3 = torch.abs(C3 * self.delta_position - self.positions)
+        X3 = self.delta_position - A3 * D3
 
-                A2 = 2 * a * r1 - a
-                C2 = 2 * r2
-                D2 = torch.abs(C2 * self.beta_position[j] - self.positions[i, j])
-                X2 = self.beta_position[j] - A2 * D2
-
-                r1 = torch.rand(1, device=self.device).item()
-                r2 = torch.rand(1, device=self.device).item()
-
-                A3 = 2 * a * r1 - a
-                C3 = 2 * r2
-                D3 = torch.abs(C3 * self.delta_position[j] - self.positions[i, j])
-                X3 = self.delta_position[j] - A3 * D3
-
-                self.positions[i, j] = (X1 + X2 + X3) / 3
+        self.positions = (X1 + X2 + X3) / 3
 
         self._set_params(self.alpha_position)
         self.iteration_count += 1
