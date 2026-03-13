@@ -1,0 +1,73 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "SwarmTorch",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#FF6B35"
+  },
+  "anchors": [
+    {
+      "name": "Getting Started",
+      "icon": "rocket",
+      "url": "getting-started"
+    },
+    {
+      "name": "Guides",
+      "icon": "book",
+      "url": "guides"
+    },
+    {
+      "name": "API Reference",
+      "icon": "code",
+      "url": "api-reference"
+    },
+    {
+      "name": "Benchmarks",
+      "icon": "chart-bar",
+      "url": "benchmarks"
+    },
+    {
+      "name": "Examples",
+      "icon": "lightbulb",
+      "url": "examples"
+    }
+  ],
+  "navigation": {
+    "pages": [
+      "introduction",
+      "getting-started/installation",
+      "getting-started/quickstart",
+      "getting-started/concepts",
+      "guides/model-training",
+      "guides/hyperparameter-tuning",
+      "guides/choosing-algorithm",
+      "guides/custom-optimizer",
+      "guides/gpu-training",
+      "api-reference/base",
+      "api-reference/swarm",
+      "api-reference/evolutionary",
+      "api-reference/physics",
+      "api-reference/bio-inspired",
+      "api-reference/human-based",
+      "api-reference/hybrid",
+      "benchmarks/benchmarks",
+      "benchmarks/methodology",
+      "benchmarks/results",
+      "examples/xor-classification",
+      "examples/image-classification",
+      "examples/hyperparameter-search",
+      "contributing"
+    ]
+  },
+  "footerSocials": {
+    "github": "https://github.com/hallelx2/swarmtorch"
+  },
+  "styling": {
+    "latex": true
+  }
+}
