@@ -40,11 +40,12 @@ from swarmtorch.swarm.model_training import (
     WOA,
 )
 
-# --- Evolutionary (8 optimizers) ---
+# --- Evolutionary (9 optimizers) ---
 from swarmtorch.evolutionary.model_training import (
     ARS,
     CA,
     CEM,
+    CMAES,
     DE,
     FDA,
     GA,
@@ -111,16 +112,34 @@ from swarmtorch.swarm.hyperparameter_tuning import (
     WOASearch,
 )
 
-# --- Evolutionary HPO Searchers (8 searchers) ---
+# --- Evolutionary HPO Searchers (9 searchers) ---
 from swarmtorch.evolutionary.hyperparameter_tuning import (
     ARSSearch,
     CASearch,
     CEMSearch,
+    CMAESSearch,
     DESearch,
     FDASearch,
     GASearch,
     PBILSearch,
     PFASearch,
+)
+
+# --- Baselines (gradient + Bayesian HPO) ---
+from swarmtorch.baselines import (
+    AdamBaseline,
+    AdamWBaseline,
+    GradientBaseline,
+    LBFGSBaseline,
+    RMSpropBaseline,
+    SGDBaseline,
+)
+from swarmtorch.baselines.hpo import (
+    BaselineHPO,
+    HPOResult,
+    HyperbandSearchBaseline,
+    RandomSearchBaseline,
+    TPESearchBaseline,
 )
 
 # --- Physics HPO Searchers (3 searchers) ---
@@ -190,7 +209,7 @@ __all__ = [
     "AFSA",
     "HSA",
     "DFO2",
-    # Evolutionary - Model Training (8)
+    # Evolutionary - Model Training (9)
     "DE",
     "GA",
     "CEM",
@@ -199,6 +218,7 @@ __all__ = [
     "FDA",
     "CA",
     "PBIL",
+    "CMAES",
     # Physics - Model Training (3)
     "SA",
     "GSA",
@@ -256,7 +276,7 @@ __all__ = [
     "AFSASearch",
     "HSASearch",
     "DFO2Search",
-    # Evolutionary - HPO Searchers (8)
+    # Evolutionary - HPO Searchers (9)
     "DESearch",
     "GASearch",
     "CEMSearch",
@@ -265,6 +285,7 @@ __all__ = [
     "FDASearch",
     "CASearch",
     "PBILSearch",
+    "CMAESSearch",
     # Physics - HPO Searchers (3)
     "SASearch",
     "GSASearch",
@@ -289,4 +310,17 @@ __all__ = [
     "GorillaTroopsOptimizerSearch",
     "JSOSearch",
     "KHASearch",
+    # Baselines - Gradient training
+    "GradientBaseline",
+    "AdamBaseline",
+    "AdamWBaseline",
+    "SGDBaseline",
+    "RMSpropBaseline",
+    "LBFGSBaseline",
+    # Baselines - HPO
+    "BaselineHPO",
+    "HPOResult",
+    "RandomSearchBaseline",
+    "TPESearchBaseline",
+    "HyperbandSearchBaseline",
 ]
