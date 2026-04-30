@@ -47,12 +47,15 @@ class HyperparameterSearch:
         self.best_score: float | None = None
 
     def _encode_params(self, params: dict) -> torch.Tensor:
-        """Encode hyperparameters to a tensor."""
+        """Encode hyperparameters to a tensor in [0, 1]."""
         encoded = []
         for key, value in self.param_space.items():
             if isinstance(value, list):
                 idx = value.index(params[key]) if params[key] in value else 0
-                encoded.append(idx / len(value))
+                # Use len-1 so encode/decode round-trip is consistent.
+                # A single-value categorical encodes to 0.
+                denom = max(1, len(value) - 1)
+                encoded.append(idx / denom)
             else:
                 normalized = (params[key] - value[0]) / (value[1] - value[0])
                 encoded.append(normalized)
@@ -63,7 +66,10 @@ class HyperparameterSearch:
         decoded = {}
         for i, (key, value) in enumerate(self.param_space.items()):
             if isinstance(value, list):
-                idx = int(encoded[i].item() * (len(value) - 1))
+                # Mirror the encoder: idx in [0, len-1] mapped to [0, 1].
+                # Round to nearest valid bucket and clamp.
+                e = max(0.0, min(1.0, float(encoded[i].item())))
+                idx = int(round(e * (len(value) - 1)))
                 decoded[key] = value[min(idx, len(value) - 1)]
             else:
                 decoded[key] = value[0] + encoded[i].item() * (value[1] - value[0])
