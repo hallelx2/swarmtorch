@@ -40,26 +40,34 @@ class PSO(SwarmOptimizer):
         c1: float = 1.5,
         c2: float = 1.5,
         device: str = "cpu",
+        position_clip: float | None = 5.0,
+        velocity_clip: float | None = 1.0,
+        **kwargs: Any,
     ) -> None:
         super().__init__(
-            params, swarm_size=swarm_size, device=device, w=w, c1=c1, c2=c2
+            params, swarm_size=swarm_size, device=device, w=w, c1=c1, c2=c2, **kwargs
         )
         self.w = w
         self.c1 = c1
         self.c2 = c2
+        # Bounds are expressed as multiples of the initial weight std so they
+        # auto-adapt to whatever scale the user's model lives at. ``None``
+        # disables clipping.
+        self.position_clip = position_clip
+        self.velocity_clip = velocity_clip
 
     def _init_swarm(self) -> None:
         """Initialize particle positions, velocities, personal bests, and global best."""
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
 
-        self.positions = torch.rand(
-            self.swarm_size,
-            param_shape[0],
-            device=self.device,
-        )
+        self.positions = self._init_positions(param_shape[0])
 
         self.velocities = torch.zeros_like(self.positions)
+
+        # Reference scale derived from the initial spread of the swarm —
+        # used to size velocity and position clamps.
+        self._init_scale = self.positions.std().clamp(min=1e-3).item()
 
         self.personal_best_positions = self.positions.clone()
         self.personal_best_fitness = torch.full(
@@ -97,7 +105,15 @@ class PSO(SwarmOptimizer):
             + self.c2 * r2 * (self.global_best_position - self.positions)
         )
 
+        if self.velocity_clip is not None:
+            v_max = self.velocity_clip * self._init_scale
+            self.velocities.clamp_(-v_max, v_max)
+
         self.positions = self.positions + self.velocities
+
+        if self.position_clip is not None:
+            x_max = self.position_clip * self._init_scale
+            self.positions.clamp_(-x_max, x_max)
 
         best_idx = torch.argmin(self.personal_best_fitness)
         self._set_params(self.personal_best_positions[best_idx])

@@ -48,11 +48,7 @@ class DE(SwarmOptimizer):
         param_shape = self._get_param_shape()
         self.population_size = self.defaults["swarm_size"]
 
-        self.population = torch.rand(
-            self.population_size,
-            param_shape[0],
-            device=self.device,
-        )
+        self.population = self._init_positions(param_shape[0])
 
         self.fitness = torch.full(
             (self.population_size,),
