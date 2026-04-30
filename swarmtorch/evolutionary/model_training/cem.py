@@ -67,7 +67,7 @@ class PFA(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -104,7 +104,7 @@ class ARS(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.velocities = torch.zeros_like(self.positions)
         self.density = torch.rand(self.swarm_size, device=self.device)
         self.best_position = torch.zeros(param_shape[0], device=self.device)
@@ -154,7 +154,7 @@ class FDA(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -192,7 +192,7 @@ class CA(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
         self.belief_space = torch.zeros(param_shape[0], device=self.device)

@@ -16,7 +16,7 @@ class CatSwarm(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.velocities = torch.zeros_like(self.positions)
         self.flags = torch.randint(0, 2, (self.swarm_size,), device=self.device)
         self.best_position = torch.zeros(param_shape[0], device=self.device)
@@ -63,7 +63,7 @@ class Cockroach(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -104,7 +104,7 @@ class Coati(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -152,7 +152,7 @@ class GorillaTroopsOptimizer(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -209,7 +209,7 @@ class JSO(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.worst_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
@@ -258,7 +258,7 @@ class KHA(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.velocities = torch.zeros_like(self.positions)
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)

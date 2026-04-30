@@ -13,7 +13,7 @@ class DFO(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -53,7 +53,7 @@ class MBO(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -94,7 +94,7 @@ class CSA(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -135,7 +135,7 @@ class AOA(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -190,7 +190,7 @@ class SOS(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -244,7 +244,7 @@ class DVBA(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -281,7 +281,7 @@ class ABCO(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -323,7 +323,7 @@ class GOA(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -371,7 +371,7 @@ class HUS(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -414,7 +414,7 @@ class JY(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.worst_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
@@ -463,7 +463,7 @@ class SPBO(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -501,7 +501,7 @@ class RandomSearch(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -535,7 +535,7 @@ class IGWO(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -592,7 +592,7 @@ class IWOA(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -647,7 +647,7 @@ class ACGWO(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -720,7 +720,7 @@ class Memetic(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -772,7 +772,7 @@ class Clonalg(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 

@@ -43,11 +43,7 @@ class GWO(SwarmOptimizer):
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
 
-        self.positions = torch.rand(
-            self.swarm_size,
-            param_shape[0],
-            device=self.device,
-        )
+        self.positions = self._init_positions(param_shape[0])
 
         self.fitness = torch.full(
             (self.swarm_size,),

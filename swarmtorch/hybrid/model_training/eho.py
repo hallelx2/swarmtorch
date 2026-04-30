@@ -13,7 +13,7 @@ class EHO(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -51,7 +51,7 @@ class ChickenSwarm(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
@@ -95,7 +95,7 @@ class SMA(SwarmOptimizer):
     def _init_swarm(self) -> None:
         param_shape = self._get_param_shape()
         self.swarm_size = self.defaults["swarm_size"]
-        self.positions = torch.rand(self.swarm_size, param_shape[0], device=self.device)
+        self.positions = self._init_positions(param_shape[0])
         self.best_position = torch.zeros(param_shape[0], device=self.device)
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
 
