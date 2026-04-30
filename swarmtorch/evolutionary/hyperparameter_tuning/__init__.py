@@ -1,5 +1,15 @@
 from swarmtorch.base.generic_search import GenericSwarmSearch
-from swarmtorch.evolutionary.model_training import DE, GA, CEM, PFA, ARS, FDA, CA, PBIL
+from swarmtorch.evolutionary.model_training import (
+    DE,
+    GA,
+    CEM,
+    PFA,
+    ARS,
+    FDA,
+    CA,
+    PBIL,
+    CMAES,
+)
 
 
 class DESearch(GenericSwarmSearch):
@@ -58,6 +68,13 @@ class PBILSearch(GenericSwarmSearch):
         super().__init__(PBIL, *args, **kwargs)
 
 
+class CMAESSearch(GenericSwarmSearch):
+    """CMAESSearch hyperparameter search using CMA-ES."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(CMAES, *args, **kwargs)
+
+
 __all__ = [
     "DESearch",
     "GASearch",
@@ -67,4 +84,5 @@ __all__ = [
     "FDASearch",
     "CASearch",
     "PBILSearch",
+    "CMAESSearch",
 ]
