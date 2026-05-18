@@ -1,11 +1,40 @@
 # Running the swarmtorch benchmarks
 
 This file documents how to reproduce the paper's empirical results.
-Two execution paths:
+
+## TL;DR — Kaggle (one paste, ~5 hours, fully standardised)
+
+The cleanest way to produce paper-quality results: paste
+`scripts/kaggle_run_all.py` into a single Kaggle code cell with a GPU
+runtime. Everything runs end-to-end, every result JSON carries a
+hardware fingerprint, and the final zip downloads from
+`/kaggle/working/`.
+
+1. Kaggle → New Notebook → Settings:
+   * Accelerator: **GPU T4 x2** (or P100/V100 if you have access)
+   * Internet: **On**
+2. In a single cell, paste the entire contents of
+   `scripts/kaggle_run_all.py` and run it.
+3. Wait ~4–6 hours (well within Kaggle's 12-hour session limit).
+4. Download `swarmtorch_results_<timestamp>.zip` from the Output tab.
+
+This produces:
+
+* Stage 4.1 dimensionality-wall study (synthetic functions)
+* Stage 4.2 real-NN training (MNIST + CIFAR-10)
+* Stage 4.3 HPO comparison (metaheuristics vs Random / TPE / Hyperband)
+* Stage 4.4 init-strategy and swarm-size ablations
+* Stage 6 swarmtorch GPU vs NumPy headline speedup
+
+Every JSON includes `meta.hardware` with CPU model, GPU model, RAM,
+OS, Python and PyTorch versions, so paper figures stay traceable to
+the exact runtime that produced them.
+
+## Other paths
 
 * **Local / Linux with `make` installed** — use the Makefile.
-* **Cloud agent (Jules), Colab, Kaggle, slim containers** — use
-  `python scripts/cloud_bench.py`. No `make` dependency; same sweeps.
+* **Cloud agent (Jules), Colab, custom containers** — use
+  `python scripts/cloud_bench.py` (no `make` dependency).
 
 ---
 

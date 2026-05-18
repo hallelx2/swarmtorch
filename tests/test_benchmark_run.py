@@ -64,7 +64,10 @@ def test_run_one_creates_json(tmp_path: Path):
     assert len(files) == 1
     loaded = RunResult.load(files[0])
     assert loaded.final_score == result.final_score
-    assert loaded.meta == {"note": "smoke test"}
+    assert loaded.meta["note"] == "smoke test"
+    # Every result is auto-stamped with the machine fingerprint.
+    assert "hardware" in loaded.meta
+    assert "torch" in loaded.meta["hardware"]
 
 
 def test_run_one_with_pso_records_trajectory(tmp_path: Path):

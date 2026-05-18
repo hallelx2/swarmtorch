@@ -88,6 +88,22 @@ SWEEPS: dict[str, list[str]] = {
         "--max-fe",
         "20000",
     ],
+    # Real-NN training tasks (MNIST + CIFAR). Heavy on CPU, fast on GPU.
+    "bench-training": [
+        "scripts/run_training.py",
+        "--output-dir",
+        "results/training",
+        "--max-fe",
+        "3000",
+    ],
+    "bench-training-quick": [
+        "scripts/run_training.py",
+        "--output-dir",
+        "results/training_quick",
+        "--quick",
+        "--max-fe",
+        "500",
+    ],
     # Smoke variants for --quick mode.
     "bench-synthetic-quick": [
         "scripts/run_synthetic.py",
@@ -151,6 +167,18 @@ def main() -> int:
         "torch.cuda.is_available() is False.",
     )
     p.add_argument(
+        "--all",
+        action="store_true",
+        help="Run the full standardised suite: ablations + HPO + synthetic + "
+        "training + GPU benchmark. Designed for Kaggle T4 / P100 runs.",
+    )
+    p.add_argument(
+        "--include-training",
+        action="store_true",
+        help="Add the real-NN training sweep (MNIST + CIFAR). Slow on CPU; "
+        "implied by --all.",
+    )
+    p.add_argument(
         "--quick",
         action="store_true",
         help="Replace each sweep with its smoke-test variant. Whole script "
@@ -172,8 +200,20 @@ def main() -> int:
     if args.quick:
         # Tiny grid for every sweep so the orchestrator finishes fast.
         sweeps = ["bench-synthetic-quick"]
-        if args.include_gpu:
+        if args.include_gpu or args.all:
             sweeps.append("bench-gpu-quick")
+        if args.all or args.include_training:
+            sweeps.append("bench-training-quick")
+    elif args.all:
+        # The full standardised Kaggle suite.
+        sweeps = [
+            "ablation-init",
+            "ablation-swarm",
+            "bench-hpo",
+            "bench-synthetic",
+            "bench-gpu",
+            "bench-training",
+        ]
     else:
         sweeps = args.sweeps or [
             "ablation-init",
@@ -183,10 +223,17 @@ def main() -> int:
         ]
         if args.include_gpu:
             sweeps.append("bench-gpu")
+        if args.include_training:
+            sweeps.append("bench-training")
 
+    # Print the hardware fingerprint *once*, loudly, at the very top --
+    # so when results land in a PR or issue, the machine that produced
+    # them is unambiguous.
+    from swarmtorch.benchmark.hardware import print_banner
+
+    print_banner(extra={"sweeps": ", ".join(sweeps)})
     print(f"[cloud_bench] python={sys.executable}")
     print(f"[cloud_bench] cwd={REPO_ROOT}")
-    print(f"[cloud_bench] sweeps={sweeps}")
 
     failures: list[str] = []
     for name in sweeps:

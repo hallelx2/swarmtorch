@@ -31,6 +31,7 @@ import numpy as np
 import torch
 
 from swarmtorch.benchmark.budget import FEBudgetTracker
+from swarmtorch.benchmark.hardware import hardware_info
 
 
 def seed_everything(seed: int) -> None:
@@ -170,6 +171,10 @@ def run_one(
 
     final_score = score_fn(optimizer) if score_fn is not None else last_score
 
+    result_meta: dict[str, Any] = dict(meta or {})
+    # Stamp every result with the machine fingerprint so JSONs are
+    # self-describing when shared between collaborators / machines.
+    result_meta.setdefault("hardware", hardware_info())
     result = RunResult(
         algo_name=algo_name,
         task_name=task_name,
@@ -179,7 +184,7 @@ def run_one(
         peak_mem_mb=float(peak_mem_mb),
         fe_used=int(tracker.fe_count),
         trajectory=tracker.trajectory,
-        meta=meta or {},
+        meta=result_meta,
     )
     result.save(config.output_dir)
     return result
