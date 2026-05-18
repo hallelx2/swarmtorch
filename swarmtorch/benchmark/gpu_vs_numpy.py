@@ -38,6 +38,7 @@ from typing import Any, Callable
 import numpy as np
 import torch
 
+from swarmtorch.benchmark.hardware import hardware_info
 from swarmtorch.benchmark.run import seed_everything
 from swarmtorch.experiments.synthetic import SYNTHETIC_FUNCTIONS, SyntheticTask
 from swarmtorch.swarm.model_training.pso import PSO
@@ -332,7 +333,10 @@ def run_gpu_vs_numpy(
                             final_loss=float(np.mean(losses)),
                             fe_used=int(fe_used),
                             device=device,
-                            meta={"all_timings": timings},
+                            meta={
+                                "all_timings": timings,
+                                "hardware": hardware_info(),
+                            },
                         )
                         results.append(record)
                         # Persist as we go — failure mid-sweep doesn't lose work.
@@ -363,8 +367,15 @@ def _write_speedup_report(
         key = (r.function, r.dim, r.swarm_size)
         grouped.setdefault(key, {}).setdefault(r.variant, []).append(r.wall_seconds)
 
+    hw = hardware_info()
     lines = [
         "# GPU vs NumPy headline benchmark",
+        "",
+        f"**Machine:** `{hw['hostname']}` -- {hw['cpu_model']} ({hw['cpu_count_logical']} cores), "
+        f"{hw['ram_mb']} MB RAM, {hw['os']}",
+        f"**GPU:** {hw.get('gpu_name') or 'none'} "
+        + (f"({hw['gpu_total_mem_mb']} MB, sm_{hw['gpu_capability']})" if hw["cuda_available"] else "")
+        + f"  |  **PyTorch:** {hw['torch']} (CUDA {hw['torch_compiled_cuda']})",
         "",
         "Wall-clock seconds for an FE-budgeted PSO run (median across 3 timed runs, ",
         "averaged across seeds). Speedup column is relative to the ``numpy`` baseline.",

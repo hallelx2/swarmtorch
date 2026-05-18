@@ -21,6 +21,7 @@ from typing import Any
 
 import numpy as np
 
+from swarmtorch.benchmark.hardware import hardware_info
 from swarmtorch.benchmark.run import RunResult, load_results
 from swarmtorch.benchmark.stats import (
     friedman_test,
@@ -111,7 +112,30 @@ def build_report(
     results = load_results(results_dir)
     summaries = aggregate_results(results)
 
-    lines: list[str] = [f"# {title}", ""]
+    # Prefer the hardware fingerprint stamped onto the first result
+    # (the machine that *produced* the data); fall back to the local
+    # machine fingerprint when re-building a report on a different
+    # machine.
+    hw = None
+    if results:
+        hw = results[0].meta.get("hardware")
+    if hw is None:
+        hw = hardware_info()
+
+    lines: list[str] = [
+        f"# {title}",
+        "",
+        f"**Machine:** `{hw['hostname']}` -- {hw.get('cpu_model','?')} "
+        f"({hw.get('cpu_count_logical','?')} cores), {hw.get('ram_mb','?')} MB RAM, {hw.get('os','?')}",
+        f"**GPU:** {hw.get('gpu_name') or 'none'}"
+        + (
+            f" ({hw.get('gpu_total_mem_mb','?')} MB, sm_{hw.get('gpu_capability','?')})"
+            if hw.get("cuda_available")
+            else ""
+        )
+        + f"  |  **PyTorch:** {hw.get('torch','?')} (CUDA {hw.get('torch_compiled_cuda','?')})",
+        "",
+    ]
     if not summaries:
         lines.append("_No results found._")
         path = output_dir / "report.md"

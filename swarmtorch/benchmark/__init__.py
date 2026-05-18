@@ -8,6 +8,7 @@ precision.
 """
 
 from swarmtorch.benchmark.budget import BudgetExceeded, FEBudgetTracker
+from swarmtorch.benchmark.hardware import hardware_info, print_banner
 from swarmtorch.benchmark.run import (
     BenchmarkConfig,
     RunResult,
@@ -34,6 +35,8 @@ __all__ = [
     "load_results",
     "run_one",
     "seed_everything",
+    "hardware_info",
+    "print_banner",
     "friedman_test",
     "nemenyi_critical_difference",
     "wilcoxon_test",
