@@ -32,20 +32,16 @@ class SineCosine(SwarmOptimizer):
         a = 2
         r1 = a - self.iteration_count * (a / max_iter)
 
-        for i in range(self.swarm_size):
-            for j in range(self.positions.shape[1]):
-                r2 = torch.rand(1, device=self.device).item() * 2 * 3.14159
-                r3 = torch.rand(1, device=self.device).item() * 2
-                r4 = torch.rand(1, device=self.device).item()
+        # Vectorized SCA update (formerly a per-element Python double loop,
+        # which forced millions of GPU<->CPU syncs and dominated wall-clock).
+        # r2 in [0, 2*pi), r3 in [0, 2), r4 in [0, 1) per element.
+        r2 = torch.rand_like(self.positions) * (2 * math.pi)
+        r3 = torch.rand_like(self.positions) * 2
+        r4 = torch.rand_like(self.positions)
 
-                if r4 < 0.5:
-                    self.positions[i, j] = self.positions[i, j] + r1 * math.sin(
-                        r2
-                    ) * torch.abs(r3 * self.best_position[j] - self.positions[i, j])
-                else:
-                    self.positions[i, j] = self.positions[i, j] + r1 * math.cos(
-                        r2
-                    ) * torch.abs(r3 * self.best_position[j] - self.positions[i, j])
+        target = torch.abs(r3 * self.best_position.unsqueeze(0) - self.positions)
+        trig = torch.where(r4 < 0.5, torch.sin(r2), torch.cos(r2))
+        self.positions = self.positions + r1 * trig * target
 
         self._set_params(self.best_position)
         self.iteration_count += 1
@@ -87,17 +83,26 @@ class MFO(SwarmOptimizer):
 
         max_iter = 1000
         t = (self.iteration_count / max_iter) * 2 - 1
+        b = 1.0
+        d = self.positions.shape[1]
+        n_flames = self.flames.shape[0]
 
-        for i in range(self.swarm_size):
-            for j in range(self.positions.shape[1]):
-                flame_idx = int(i * self.flames.shape[0] / self.swarm_size)
-                distance = torch.abs(self.positions[i, j] - self.flames[flame_idx, j])
-                b = 1
-                t_val = t * (1 - j / self.positions.shape[1])
-                self.positions[i, j] = (
-                    distance * math.exp(b * t_val) * math.cos(2 * 3.14159 * t_val)
-                    + self.flames[flame_idx, j]
-                )
+        # Vectorized MFO update (was a per-element Python double loop).
+        # Each particle i spirals around flame floor(i * n_flames / swarm).
+        flame_idx = (
+            torch.arange(self.swarm_size, device=self.device) * n_flames
+            // self.swarm_size
+        ).clamp(max=n_flames - 1)
+        chosen = self.flames[flame_idx]  # (swarm_size, d)
+
+        # t_val decays across dimensions: t * (1 - j/d), broadcast over particles.
+        j = torch.arange(d, device=self.device, dtype=self.positions.dtype)
+        t_val = (t * (1 - j / d)).unsqueeze(0)  # (1, d)
+
+        distance = torch.abs(self.positions - chosen)
+        self.positions = (
+            distance * torch.exp(b * t_val) * torch.cos(2 * math.pi * t_val) + chosen
+        )
 
         self._set_params(self.best_position)
         self.iteration_count += 1

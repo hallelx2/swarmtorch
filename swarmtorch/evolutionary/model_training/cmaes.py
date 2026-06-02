@@ -55,6 +55,7 @@ class CMAES(SwarmOptimizer):
         device: str = "cpu",
         init_strategy: str = "model",
         init_sigma: float = 0.1,
+        diagonal_threshold: int = 5000,
         **kwargs: Any,
     ) -> None:
         # CMA-ES picks its own default popsize if ``swarm_size`` is None.
@@ -70,6 +71,11 @@ class CMAES(SwarmOptimizer):
         )
         self._user_swarm_size = swarm_size
         self.sigma0 = sigma0
+        # Above this dimension, the full d x d covariance matrix is
+        # infeasible (a 250k-param net needs ~500 GB). Switch pycma to its
+        # separable/diagonal covariance (sep-CMA-ES) automatically, which
+        # is O(d) memory and the standard high-dimensional variant.
+        self.diagonal_threshold = diagonal_threshold
         self.iteration_count = 0
         self.best_position: torch.Tensor | None = None
         self.best_fitness = torch.tensor(float("inf"), device=self.device)
@@ -98,6 +104,22 @@ class CMAES(SwarmOptimizer):
         opts: dict[str, Any] = {"verbose": -9}
         if self._user_swarm_size is not None and self._user_swarm_size > 0:
             opts["popsize"] = int(self._user_swarm_size)
+
+        # High-dimensional problems (e.g. NN weight spaces) cannot hold a
+        # full covariance matrix. Use the separable/diagonal variant so the
+        # optimizer runs in O(d) instead of O(d^2) and never OOMs.
+        if d > self.diagonal_threshold:
+            import warnings
+
+            warnings.warn(
+                f"CMA-ES: d={d} exceeds diagonal_threshold="
+                f"{self.diagonal_threshold}; using separable (diagonal) "
+                f"covariance (sep-CMA-ES) to stay feasible.",
+                stacklevel=2,
+            )
+            # CMA_diagonal=True keeps the covariance diagonal for the whole
+            # run; this is the documented pycma high-dimensional mode.
+            opts["CMA_diagonal"] = True
 
         self._es = cma.CMAEvolutionStrategy(x0, sigma0, opts)
         # Resolved population size (pycma may pick its own default).
