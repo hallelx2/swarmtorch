@@ -181,7 +181,17 @@ class SwarmOptimizer(Optimizer):
         if model is None or loss_fn is None:
             self._functional_closure = None
             self._functional_model = None
+            self._plain_from_functional = None
             return
+
+        # A zero-argument plain closure equivalent: evaluate the model in its
+        # *current* parameter state. Optimizers that evaluate one candidate at
+        # a time (e.g. DE, GA) call ``closure()`` directly after writing a
+        # candidate into the model; they use this, while population-synchronous
+        # optimizers (PSO, GWO, ...) take the batched vmap path inside
+        # ``_evaluate_fitness``. Passing the live ``model`` as the ``forward``
+        # callable makes ``loss_fn(model)`` evaluate the current weights.
+        self._plain_from_functional = lambda: loss_fn(model)
 
         from torch.func import functional_call
 
@@ -227,15 +237,15 @@ class SwarmOptimizer(Optimizer):
             here — ``_update_positions`` evaluates it once per particle.
         """
         # Stash the closure so subclasses can pull it from
-        # ``self._current_closure`` inside ``_update_positions``.
-        # If the user has registered a functional closure (vmap fast path)
-        # but didn't supply a plain closure, install a passthrough
-        # sentinel so the existing ``if closure is None: return`` guards
-        # in subclass ``_update_positions`` don't short-circuit. The
-        # actual fitness evaluation still goes through the vmap path
-        # inside ``_evaluate_fitness``.
+        # ``self._current_closure`` inside ``_update_positions``. If the user
+        # registered a functional closure (vmap fast path) but didn't supply a
+        # plain closure, install a *zero-argument* plain equivalent so that
+        # (a) the ``if closure is None: return`` guards don't short-circuit and
+        # (b) optimizers that call ``closure()`` directly per candidate (DE,
+        # GA) still work. Population-synchronous optimizers ignore this and take
+        # the batched vmap path inside ``_evaluate_fitness``.
         if closure is None and getattr(self, "_functional_closure", None) is not None:
-            self._current_closure = self._functional_closure
+            self._current_closure = self._plain_from_functional
         else:
             self._current_closure = closure
 

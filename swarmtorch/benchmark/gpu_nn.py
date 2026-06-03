@@ -70,11 +70,21 @@ def _run_one(algo_cls, hidden, swarm_size, max_fe, seed, device, use_vmap):
     x = torch.randn(batch, in_dim, device=device)
     y = torch.randint(0, out_dim, (batch,), device=device)
 
-    try:
-        opt = algo_cls(model.parameters(), swarm_size=swarm_size, device=device,
-                       init_strategy="model")
-    except TypeError:
-        opt = algo_cls(model.parameters(), swarm_size=swarm_size, device=device)
+    # Build kwargs by introspection: some optimizers name the population
+    # ``swarm_size`` (PSO/GWO/WOA/CMAES) and others ``population_size`` (DE/GA).
+    import inspect
+
+    sig = inspect.signature(algo_cls.__init__)
+    params = sig.parameters
+    accepts_kw = any(p.kind == inspect.Parameter.VAR_KEYWORD for p in params.values())
+    kwargs: dict[str, Any] = {"device": device}
+    if "swarm_size" in params or accepts_kw:
+        kwargs["swarm_size"] = swarm_size
+    elif "population_size" in params:
+        kwargs["population_size"] = swarm_size
+    if "init_strategy" in params or accepts_kw:
+        kwargs["init_strategy"] = "model"
+    opt = algo_cls(model.parameters(), **kwargs)
 
     if use_vmap:
         opt.set_functional_closure(model, lambda fwd: F.cross_entropy(fwd(x), y))
@@ -130,10 +140,15 @@ def run_nn_speedup(
                 for seed in seeds:
                     for vname, dev, use_vmap in variants:
                         cell += 1
-                        # warm-up (untimed)
-                        _run_one(ALGOS[algo], h, ss, ss, seed, dev, use_vmap)
-                        wall, best, npar, fe = _run_one(
-                            ALGOS[algo], h, ss, max_fe, seed, dev, use_vmap)
+                        try:
+                            # warm-up (untimed)
+                            _run_one(ALGOS[algo], h, ss, ss, seed, dev, use_vmap)
+                            wall, best, npar, fe = _run_one(
+                                ALGOS[algo], h, ss, max_fe, seed, dev, use_vmap)
+                        except Exception as e:  # one bad cell must not kill the sweep
+                            print(f"[gpu_nn] {cell}/{total} {algo} {vname} FAILED: {e}",
+                                  flush=True)
+                            continue
                         rec = NNBenchResult(
                             algorithm=algo, n_params=npar, swarm_size=ss,
                             variant=vname, device=dev, seed=seed,
