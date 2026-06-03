@@ -119,7 +119,10 @@ class HyperbandSearchBaseline(BaselineHPO):
 
         def objective(trial: "optuna.Trial") -> float:
             params = _suggest_params(trial, self.param_space)
-            model = self.model_fn(params).to(self.device)
+            model = self.model_fn(params)
+            # sklearn / xgboost estimators have no .to(); only move torch models.
+            if hasattr(model, "to"):
+                model = model.to(self.device)
 
             def report_callback(score: float, step: int) -> None:
                 trial.report(float(score), step)

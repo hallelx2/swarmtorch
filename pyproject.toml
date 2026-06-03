@@ -38,6 +38,8 @@ benchmark = [
     "scipy>=1.10.0",
     "optuna>=3.0",
     "cma>=3.3.0",
+    "scikit-learn>=1.2.0",
+    "nevergrad>=1.0.0",
 ]
 # Legacy alias kept so older docs still work.
 benchmarks = [

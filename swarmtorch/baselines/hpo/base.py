@@ -50,7 +50,11 @@ class BaselineHPO:
         self.seed = seed
 
     def _evaluate(self, params: dict) -> float:
-        model = self.model_fn(params).to(self.device)
+        model = self.model_fn(params)
+        # Only torch modules need a device move; sklearn / xgboost estimators
+        # (and any other non-torch model) are used as-is.
+        if hasattr(model, "to"):
+            model = model.to(self.device)
         return float(self.train_fn(model, params))
 
     def search(self) -> HPOResult:

@@ -79,7 +79,10 @@ class HyperparameterSearch:
         """Evaluate a single set of hyperparameters."""
         params = self._decode_params(encoded)
         model = self.model_fn(params)
-        model = model.to(self.device)
+        # Only torch modules need a device move; sklearn / xgboost estimators
+        # (and any other non-torch model) are used as-is.
+        if hasattr(model, "to"):
+            model = model.to(self.device)
         score = self.train_fn(model, params)
         return score
 
