@@ -25,7 +25,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -e .[dev]
+        # The test suite exercises the benchmark harness (plots, stats, HPO
+        # baselines, CMA-ES), so the benchmark extra is required for collection
+        # to succeed — conftest.py imports matplotlib.
+        pip install -e .[dev,benchmark]
         
     - name: Lint with Ruff
       run: ruff check .

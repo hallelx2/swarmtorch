@@ -15,7 +15,6 @@ and stops cleanly.
 """
 
 from collections.abc import Callable
-from typing import Any
 
 import torch
 

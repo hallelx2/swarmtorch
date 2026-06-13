@@ -15,7 +15,6 @@ from __future__ import annotations
 import argparse
 import time
 from pathlib import Path
-from typing import Any
 
 from swarmtorch.baselines.hpo import (
     HyperbandSearchBaseline,

@@ -88,6 +88,15 @@ include = ["swarmtorch*"]
 [tool.ruff]
 line-length = 88
 target-version = "py310"
+# Notebooks are demo/cell code (compact one-liners, post-install imports);
+# they are not part of the importable library surface, so we don't lint them.
+extend-exclude = ["notebooks", "paper", "results"]
+
+[tool.ruff.lint]
+# E731 (lambda assignment) and E70x (compound one-liners) are deliberate,
+# readable choices in the benchmark/experiment scripts where a closure or a
+# tight timing block reads better on one line. They are stylistic, not bugs.
+ignore = ["E731", "E701", "E702"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -48,7 +48,6 @@ def test_log_every_records_trajectory():
 
 def test_best_so_far_only_decreases():
     tracker = FEBudgetTracker(max_fe=10)
-    wrapped = tracker.wrap_closure(lambda: torch.tensor(0.0))
     losses = [3.0, 1.0, 2.0, 0.5, 0.7]
     for v in losses:
         # mutate the closure to return v

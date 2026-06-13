@@ -40,7 +40,7 @@ import torch
 
 from swarmtorch.benchmark.hardware import hardware_info
 from swarmtorch.benchmark.run import seed_everything
-from swarmtorch.experiments.synthetic import SYNTHETIC_FUNCTIONS, SyntheticTask
+from swarmtorch.experiments.synthetic import SyntheticTask
 from swarmtorch.swarm.model_training.pso import PSO
 
 

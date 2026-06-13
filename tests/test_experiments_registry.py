@@ -1,7 +1,6 @@
 """Tests for paper-algorithm registry and operator taxonomy (Stage 4.4 / 4.5)."""
 
 import pytest
-import torch
 from torch import nn
 
 from swarmtorch.experiments.registry import (

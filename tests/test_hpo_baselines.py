@@ -1,7 +1,6 @@
 """Tests for HPO baselines (Stage 3.2)."""
 
 import pytest
-import torch
 from torch import nn
 
 from swarmtorch.baselines.hpo import RandomSearchBaseline

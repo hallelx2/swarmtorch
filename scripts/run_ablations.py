@@ -20,7 +20,7 @@ import argparse
 from pathlib import Path
 
 from swarmtorch.benchmark import BenchmarkConfig
-from swarmtorch.experiments import PAPER_ALGORITHMS, run_sweep
+from swarmtorch.experiments import run_sweep
 from swarmtorch.experiments.synthetic import make_synthetic_tasks
 
 
