@@ -26,7 +26,6 @@ from pathlib import Path
 from typing import Any
 
 from swarmtorch.baselines.hpo import (
-    BaselineHPO,
     HyperbandSearchBaseline,
     RandomSearchBaseline,
     TPESearchBaseline,

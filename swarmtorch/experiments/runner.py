@@ -27,7 +27,6 @@ import torch
 
 from swarmtorch.benchmark import (
     BenchmarkConfig,
-    RunResult,
     build_report,
     convergence_plot,
     load_results,
